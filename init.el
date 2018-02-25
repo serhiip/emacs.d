@@ -1,8 +1,9 @@
 (set-default-font "PragmataPro")
 (set-face-attribute 'default nil :height 130)
+(let ((server-name "gui"))
+  (server-start))
 
 (require 'package)
-
 (setq
  package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                     ("org" . "http://orgmode.org/elpa/")
@@ -10,23 +11,41 @@
                     ;;("melpa-stable" . "http://stable.melpa.org/packages/")
                    ))
 
-(setq package-list '(jade-mode monokai-theme scala-mode
-                               web-mode org helm neotree
-                               expand-region tern tern-auto-complete
-                               use-package projectile))
+(setq package-list '(org
+                     use-package
+                     scala-mode
+                     web-mode
+                     helm
+                     neotree
+                     expand-region
+                     tern
+                     tern-auto-complete
+                     projectile))
+
 (package-initialize)
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
 
-(setq user-emacs-directory (file-truename "~/.emacs.d/"))
-(add-to-list 'load-path (expand-file-name "init" user-emacs-directory))
+(let ((default-directory (concat
+			  user-emacs-directory
+			  (convert-standard-filename "init"))))
+  (normal-top-level-add-subdirs-to-load-path)
+  (add-to-list 'load-path default-directory))
+
+(use-package use-package-ensure-system-package :ensure t)
+
+(require 'init-theme)
+(require 'init-projectile)
 (require 'init-pretty-symbols)
 (require 'init-keys)
 (require 'init-emacs-settings)
 (require 'init-scala)
 (require 'init-shell)
 (require 'init-haskell)
+(require 'init-dotty)
+(require 'init-log-edit)
+
 (require 'whitespace)
 
 (use-package expand-region
@@ -38,27 +57,22 @@
   :commands company-mode
   :init
   (setq
-   company-dabbrev-ignore-case nil
-   company-dabbrev-code-ignore-case nil
+   company-dabbrev-ignore-case t
+   company-dabbrev-code-ignore-case t
    company-dabbrev-downcase nil
-   company-idle-delay 0
-   company-minimum-prefix-length 4)
-  :config
+   company-idle-delay 0.2
+   company-minimum-prefix-length 3)
+;;  :config
   ;; disables TAB in company-mode, freeing it for yasnippet
-  (define-key company-active-map [tab] nil)
-  (define-key company-active-map (kbd "TAB") nil))
+  ;;(define-key company-active-map [tab] nil)
+  ;;(define-key company-active-map (kbd "TAB") nil)
+  )
 
 (use-package yasnippet
   :diminish yas-minor-mode
   :commands yas-minor-mode
   :config (yas-reload-all))
 
-(use-package projectile
-  :demand
-  :init   (setq projectile-use-git-grep t)
-  :config (projectile-global-mode t)
-  :bind   (("C-<tab> p" . projectile-find-file)
-           ("C-<tab> g" . projectile-grep)))
 
 (require 'org)
 (setq org-default-notes-file (concat org-directory "/notes.org"))
@@ -74,32 +88,36 @@
 (setq web-mode-markup-indent-offset 2)
 
 ;; js-mode
-(add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-(add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js2-mode-hook 'ac-js2-mode)
-(setq js2-highlight-level 3)
-(add-hook 'js-mode-hook 'auto-complete-mode)
-(add-hook 'js-mode-hook (lambda () (tern-mode t))) ;; npm install -g tern
-(eval-after-load 'tern
-   '(progn
-      (require 'tern-auto-complete)
-      (tern-ac-setup)))
+;; (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
+;; (add-hook 'js-mode-hook 'js2-minor-mode)
+;; (add-hook 'js2-mode-hook 'ac-js2-mode)
+;; (setq js2-highlight-level 3)
+;; (add-hook 'js-mode-hook 'auto-complete-mode)
+;; (add-hook 'js-mode-hook (lambda () (tern-mode t))) ;; npm install -g tern
+;; (eval-after-load 'tern
+;;    '(progn
+;;       (require 'tern-auto-complete)
+;;       (tern-ac-setup)))
 ;; helm
 (require 'helm-config)
 (helm-mode 1)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 
-(add-hook 'html-mode-hook
-          (lambda()
-            (setq sgml-basic-offset 2)))
-;; hideshow
-(load-library "hideshow")
-(add-hook 'scala-mode-hook 'hs-minor-mode)
-(add-hook 'js-mode-hook 'hs-minor-mode)
-(defun display-code-lines (ov) ;; display the overlay content in a tooltip
-  (when (eq 'code (overlay-get ov 'hs))
-    (overlay-put ov 'help-echo
-                 (buffer-substring (overlay-start ov)
-                                   (overlay-end ov)))))
-(setq hs-set-up-overlay 'display-code-lines)
+;; (add-hook 'html-mode-hook
+;;           (lambda()
+;;             (setq sgml-basic-offset 2)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (haskell-process haskell-interactive-mode web-mode use-package tern-auto-complete scala-mode2 scala-mode sbt-mode s projectile php-auto-yasnippets neotree monokai-theme lua-mode jade-mode hindent helm-descbinds haskell-mode flymake-php flycheck expand-region exec-path-from-shell diminish company ac-js2))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

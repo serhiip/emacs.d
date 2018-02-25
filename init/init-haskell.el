@@ -1,33 +1,34 @@
 (require 'use-package)
 
-(use-package hindent :ensure t)
-(use-package haskell-mode :ensure t)
+(use-package hindent
+  :ensure t
+  :init
+  ;; M-q   formats current block
+  ;; C-M-\ formats current region
+  (add-hook 'haskell-mode-hook #'hindent-mode))
 
-(setq hindent-process-path (file-truename "~/.local/bin/hindent"))
+(use-package haskell-interactive-mode)
+(use-package haskell-process)
 
-(require 'hindent)
-;; M-q   formats current block
-;; C-M-\ formats current region
-(add-hook 'haskell-mode-hook #'hindent-mode)
-
-;; stack install stylish-haskell
-(define-key haskell-mode-map (kbd "C-c C-f") 'haskell-mode-stylish-buffer)
-
-(require 'haskell-interactive-mode)
-(require 'haskell-process)
-(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-(custom-set-variables
-  '(haskell-process-suggest-remove-import-lines t)
-  '(haskell-process-auto-import-loaded-modules t)
-  '(haskell-process-log t)
-  '(haskell-tags-on-save t)
-  '(tags-revert-without-query t))
-
-(define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-(define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
-(define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
-(define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
-(define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+(use-package haskell-mode
+  :after (haskell-interactive-mode haskell-process)
+  :ensure t
+  :init (setq haskell-process-suggest-remove-import-lines t
+              haskell-process-auto-import-loaded-modules t
+              haskell-process-log t
+              haskell-tags-on-save t
+              tags-revert-without-query t)
+  :hook (haskell-mode-hook . interactive-haskell-mode)
+  :bind (:map haskell-mode-map
+              ("C-`"     . haskell-interactive-bring)
+              ("C-c C-l" . haskell-process-load-or-reload)
+              ("C-c C-t" . haskell-process-do-type)
+              ("C-c C-i" . haskell-process-do-info)
+              ("C-c C-c" . haskell-process-cabal-build)
+              ("C-c C-k" . haskell-interactive-mode-clear)
+              ("M-."     . haskell-mode-jump-to-def-or-tag)
+              ;; stack install stylish-haskell
+              ("C-c C-f" . haskell-mode-stylish-buffer))
+  :ensure-system-package (stylish-haskell . "stack install stylish-haskell"))
 
 (provide 'init-haskell)
