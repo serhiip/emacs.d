@@ -13,6 +13,7 @@
 
 (setq package-list '(org
                      use-package
+                     flycheck
                      scala-mode
                      web-mode
                      helm
@@ -107,6 +108,8 @@
 ;; (add-hook 'html-mode-hook
 ;;           (lambda()
 ;;             (setq sgml-basic-offset 2)))
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -114,7 +117,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (haskell-process haskell-interactive-mode web-mode use-package tern-auto-complete scala-mode2 scala-mode sbt-mode s projectile php-auto-yasnippets neotree monokai-theme lua-mode jade-mode hindent helm-descbinds haskell-mode flymake-php flycheck expand-region exec-path-from-shell diminish company ac-js2))))
+    (flycheck web-mode use-package-ensure-system-package tern-auto-complete scala-mode projectile neotree monokai-theme hindent helm haskell-mode expand-region exec-path-from-shell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
