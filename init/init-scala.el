@@ -11,7 +11,4 @@
 (setq prettify-symbols-alist scala-prettify-symbols-alist)
 (prettify-symbols-mode)
 
-(require 'jade-mode)
-(add-to-list 'auto-mode-alist '("\\.jade$" . jade-mode))
-
 (provide 'init-scala)
