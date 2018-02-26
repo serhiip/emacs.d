@@ -32,8 +32,8 @@
     (package-install package)))
 
 (let ((default-directory (concat
-			  user-emacs-directory
-			  (convert-standard-filename "init"))))
+                          user-emacs-directory
+                          (convert-standard-filename "init"))))
   (normal-top-level-add-subdirs-to-load-path)
   (add-to-list 'load-path default-directory))
 
@@ -71,6 +71,13 @@
   ;;(define-key company-active-map [tab] nil)
   ;;(define-key company-active-map (kbd "TAB") nil)
   )
+
+(defun serhiip--take-note ()
+  (interactive)
+;;  (print (concat "substracting " (number-to-string begin) " - " (number-to-string end)))
+  (if (and (fboundp 'projectile-project-p) (projectile-project-p))
+      (find-file (file-truename (concat (projectile-project-root) "/notes.org")))
+    (find-file (file-truename "~/org/notes.org"))))
 
 (use-package yasnippet
   :diminish yas-minor-mode
