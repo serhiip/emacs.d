@@ -49,6 +49,7 @@
 (require 'init-haskell)
 (require 'init-dotty)
 (require 'init-log-edit)
+(require 'functions)
 
 (require 'whitespace)
 
@@ -71,13 +72,6 @@
   ;;(define-key company-active-map [tab] nil)
   ;;(define-key company-active-map (kbd "TAB") nil)
   )
-
-(defun serhiip--take-note ()
-  (interactive)
-;;  (print (concat "substracting " (number-to-string begin) " - " (number-to-string end)))
-  (if (and (fboundp 'projectile-project-p) (projectile-project-p))
-      (find-file (file-truename (concat (projectile-project-root) "/notes.org")))
-    (find-file (file-truename "~/org/notes.org"))))
 
 (use-package yasnippet
   :diminish yas-minor-mode
