@@ -67,7 +67,7 @@
    company-dabbrev-downcase nil
    company-idle-delay 0.2
    company-minimum-prefix-length 3)
-;;  :config
+  ;;  :config
   ;; disables TAB in company-mode, freeing it for yasnippet
   ;;(define-key company-active-map [tab] nil)
   ;;(define-key company-active-map (kbd "TAB") nil)
