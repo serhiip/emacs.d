@@ -1,8 +1,9 @@
 (defun serhiip--take-note (start end)
   (interactive "r")
-  (serhiip--take-note-imp start end))
+  (serhiip--take-note-imp (buffer-substring start end))
+  (kill-region start end))
 
-(defun serhiip--take-note-imp (start end)
+(defun serhiip--take-note-imp (lines)
   (let* ((inside-project? (and
                            (fboundp 'projectile-project-p)
                            (projectile-project-p)))
@@ -12,9 +13,11 @@
          (buff (find-file-noselect file)))
     (with-current-buffer buff
       (goto-char (point-max))
-      (princ "* TODO " buff))
-    (append-to-buffer buff start end)
-    (kill-region start end)
+      (let ((todos (mapconcat
+                    (lambda (l) (concat "* TODO " l))
+                    (split-string lines "\n")
+                    "\n")))
+        (princ todos buff)))
     (display-buffer buff)))
 
 (provide 'functions)
