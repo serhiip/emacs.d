@@ -49,6 +49,7 @@
 (require 'init-haskell)
 (require 'init-dotty)
 (require 'init-log-edit)
+(require 'init-elisp)
 (require 'functions)
 
 (require 'whitespace)
