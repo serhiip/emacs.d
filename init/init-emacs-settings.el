@@ -20,5 +20,6 @@
 
 (setq-default indent-tabs-mode nil)
 (add-to-list 'exec-path "/usr/local/bin")
+(fset 'yes-or-no-p 'y-or-n-p)
 
 (provide 'init-emacs-settings)
