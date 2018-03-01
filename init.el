@@ -50,6 +50,7 @@
 (require 'init-dotty)
 (require 'init-log-edit)
 (require 'init-elisp)
+(require 'init-ts)
 (require 'functions)
 
 (require 'whitespace)
