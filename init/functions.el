@@ -1,15 +1,22 @@
 (require 'subr-x)
 (require 'org)
 
-(defun serhiip--take-note (start end)
+(defun serhiip--take-notes-from-region (start end)
   (interactive "r")
-  (serhiip--take-note-imp (buffer-substring start end))
-  (kill-region start end))
+  (if (not (eq start end))
+      (progn
+        (serhiip--take-note-impl (buffer-substring start end))
+        (kill-region start end))
+    (user-error "Selection must be non-empty to take a note")))
+
+(defun serhiip--take-note-todo (note-text)
+  (interactive "sTODO: ")
+  (serhiip--take-note-imp note-text))
 
 (defun serhiip--fmt-note (note)
   (concat "* TODO " (string-trim note)))
 
-(defun serhiip--take-note-imp (lines)
+(defun serhiip--take-note-impl (lines)
   (let* ((inside-project? (and
                            (fboundp 'projectile-project-p)
                            (projectile-project-p)))
