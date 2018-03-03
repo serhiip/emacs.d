@@ -19,17 +19,17 @@
 
          (buff (find-file-noselect file))
 
-         (todos (seq-reduce
-                 (lambda (acc line)
-                   (if (not (string-blank-p line))
-                       (concat acc "\n"
-                               (serhiip--fmt-note line))
-                     acc))
-                 (split-string lines "\n")
-                 "")))
+         (todos (mapconcat
+                 'serhiip--fmt-note
+                 (seq-filter
+                  (lambda (l) (not (string-blank-p l)))
+                  (split-string lines "\n"))
+                 "\n")))
 
-    (with-current-buffer buff (goto-char (point-max)))
-    (princ todos buff)
+    (with-current-buffer buff
+      (goto-char (point-max))
+      (delete-trailing-whitespace))
+    (princ (concat todos "\n") buff)
     (display-buffer buff)))
 
 (provide 'functions)
