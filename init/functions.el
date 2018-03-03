@@ -1,4 +1,5 @@
 (require 'subr-x)
+(require 'org)
 
 (defun serhiip--take-note (start end)
   (interactive "r")
@@ -15,7 +16,7 @@
 
          (file (if inside-project?
                    (projectile-expand-root "notes.org")
-                 (file-truename "~/org/notes.org")))
+                 org-default-notes-file))
 
          (buff (find-file-noselect file))
 

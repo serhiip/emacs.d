@@ -51,7 +51,7 @@
 (require 'init-log-edit)
 (require 'init-elisp)
 (require 'init-ts)
-(require 'functions)
+(require 'init-org)
 
 (require 'whitespace)
 
@@ -79,10 +79,6 @@
   :diminish yas-minor-mode
   :commands yas-minor-mode
   :config (yas-reload-all))
-
-
-(require 'org)
-(setq org-default-notes-file (concat org-directory "/notes.org"))
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
