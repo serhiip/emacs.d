@@ -11,7 +11,7 @@
 
 (defun serhiip--take-note-todo (note-text)
   (interactive "sTODO: ")
-  (serhiip--take-note-imp note-text))
+  (serhiip--take-note-impl note-text))
 
 (defun serhiip--fmt-note (note)
   (concat "* TODO " (string-trim note)))
