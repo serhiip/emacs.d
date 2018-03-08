@@ -47,7 +47,7 @@
 (require 'init-scala)
 (require 'init-shell)
 (require 'init-haskell)
-(require 'init-dotty)
+;;(require 'init-dotty)
 (require 'init-log-edit)
 (require 'init-elisp)
 (require 'init-ts)
