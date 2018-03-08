@@ -11,11 +11,14 @@
               (shell-quote-argument to))))
     (shell-command cmd)))
 
+(defun org-file-path (file)
+  (convert-standard-filename (concat org-directory file)))
+
 (use-package org
   :ensure t
   :init
-  (setq org-default-notes-file (convert-standard-filename "~/org/todo.org")
-        org-mobile-directory   (convert-standard-filename "~/org/mobile")
+  (setq org-default-notes-file (org-file-path "/todo.org")
+        org-mobile-directory   (org-file-path "/mobile")
         org-server-location    "org-server:/home/serhii/org-sync/org/"
         mobile-dir-truename    (file-truename (concat org-mobile-directory "/"))
         org-todo-keywords      '((sequence "TODO" "WAIT" "|" "DONE")
