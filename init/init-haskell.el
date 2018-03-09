@@ -12,7 +12,6 @@
               tags-revert-without-query t)
   (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
   (add-hook 'haskell-mode-hook #'flycheck-mode)
-
   :bind (:map haskell-mode-map
               ("C-`"     . haskell-interactive-bring)
               ("C-c C-l" . haskell-process-load-or-reload)
