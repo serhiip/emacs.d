@@ -2,6 +2,7 @@
 (require 'simple)
 (require 'files)
 (require 'org)
+(require 'org-capture)
 
 (defun serhiip--rsync (from to)
   (let ((cmd (format
@@ -13,6 +14,11 @@
 (defun serhiip--org-file-path (file)
   (convert-standard-filename (concat org-directory file)))
 
+(defvar serhiip--org-current-file nil)
+
+(defun serhiip--org-get-current-file ()
+  (or serhiip--org-current-file org-default-notes-file))
+
 (defun serhiip--take-notes-from-region (start end)
   (interactive "r")
   (if (not (eq start end))
@@ -22,7 +28,7 @@
     (user-error "Selection must be non-empty to take a note")))
 
 (defun serhiip--take-note-todo (note-text)
-  (interactive "sTODO: ")
+  (interactive "sSummary: ")
   (serhiip--take-note-impl note-text))
 
 (defun serhiip--fmt-note (note)
@@ -33,24 +39,19 @@
                            (fboundp 'projectile-project-p)
                            (projectile-project-p)))
 
+         (curr-filename (file-truename buffer-file-name))
+
+         (editing-agenda-file? (member
+                                curr-filename
+                                (mapcar 'file-truename org-agenda-files)))
+
          (file (if inside-project?
                    (serhiip--org-file-path
                     (format "/%s.org" (projectile-project-name)))
-                 org-default-notes-file))
+                 (if editing-agenda-file?
+                     curr-filename
+                   org-default-notes-file))))
 
-         (buff (find-file-noselect file))
-
-         (todos (mapconcat
-                 'serhiip--fmt-note
-                 (seq-filter
-                  (lambda (l) (not (string-blank-p l)))
-                  (split-string lines "\n"))
-                 "\n")))
-
-    (with-current-buffer buff
-      (goto-char (point-max))
-      (delete-trailing-whitespace))
-    (princ (concat todos "\n") buff)
-    (display-buffer buff)))
+    (let ((serhiip--org-current-file file)) (org-capture-string lines))))
 
 (provide 'functions)
