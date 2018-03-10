@@ -39,6 +39,7 @@
 
 (use-package use-package-ensure-system-package :ensure t)
 
+(require 'init-autosaves)
 (require 'init-theme)
 (require 'init-projectile)
 (require 'init-pretty-symbols)
