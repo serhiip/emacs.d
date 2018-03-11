@@ -23,7 +23,13 @@
                                  ("f" "New feature" entry (file (serhiip--org-get-current-file))
                                   "* FEATURE %i %?\n  Added on %U\n  %a")
                                  ("b" "Bug" entry (file (serhiip--org-get-current-file))
-                                  "* BUG %i %?\n  Added on %U\n  %a")))
+                                  "* BUG %i %?\n  Added on %U\n  %a"))
+        org-todo-keyword-faces  '(("TODO" . "red")
+                                  ("DOING" . "yellow")
+                                  ("FEATURE" . "firebrick")
+                                  ("BUG" . "magenta")
+                                  ("TOREAD" . "dark cyan")
+                                  ("TOBUY" . "wheat")))
   (add-hook
    'org-mobile-post-push-hook
    #'(lambda () (serhiip--rsync mobile-dir-truename org-server-location)))
