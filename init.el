@@ -53,6 +53,7 @@
 (require 'init-elisp)
 (require 'init-ts)
 (require 'init-org)
+(require 'init-python)
 
 (require 'whitespace)
 
