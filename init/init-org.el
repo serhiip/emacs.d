@@ -24,12 +24,13 @@
                                   "* FEATURE %i %?\n  Added on %U\n  %a")
                                  ("b" "Bug" entry (file (serhiip--org-get-current-file))
                                   "* BUG %i %?\n  Added on %U\n  %a"))
-        org-todo-keyword-faces  '(("TODO" . "red")
-                                  ("DOING" . "yellow")
-                                  ("FEATURE" . "firebrick")
-                                  ("BUG" . "magenta")
-                                  ("TOREAD" . "dark cyan")
-                                  ("TOBUY" . "wheat")))
+        org-todo-keyword-faces '(("TODO" . "red")
+                                 ("DOING" . "yellow")
+                                 ("FEATURE" . "firebrick")
+                                 ("BUG" . "magenta")
+                                 ("TOREAD" . "dark cyan")
+                                 ("TOBUY" . "wheat"))
+        org-ellipsis           " ⤵")
   (add-hook
    'org-mobile-post-push-hook
    #'(lambda () (serhiip--rsync mobile-dir-truename org-server-location)))
@@ -43,5 +44,11 @@
              (serhiip--rsync from org-server-location))))
   :bind (("C->"   . serhiip--take-notes-from-region)
          ("C-c c" . serhiip--take-note-todo)))
+
+(use-package org-bullets
+  :ensure t
+  :after org
+  :init
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 (provide 'init-org)
