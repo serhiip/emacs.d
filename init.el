@@ -1,5 +1,6 @@
 (set-default-font "PragmataPro")
 (set-face-attribute 'default nil :height 130)
+(server-start)
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
