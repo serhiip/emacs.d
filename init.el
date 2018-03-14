@@ -41,6 +41,7 @@
 (require 'init-magit)
 (require 'init-projectile)
 (require 'init-pretty-symbols)
+(require 'init-helm)
 (require 'init-autosaves)
 (require 'init-theme)
 (require 'init-keys)
@@ -86,10 +87,3 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (setq web-mode-markup-indent-offset 2)
-
-;; helm
-(require 'helm-config)
-(helm-mode 1)
-(global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-
