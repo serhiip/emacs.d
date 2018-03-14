@@ -38,13 +38,13 @@
 
 (use-package use-package-ensure-system-package :ensure t)
 
-(require 'init-autosaves)
-(require 'init-theme)
+(require 'init-magit)
 (require 'init-projectile)
 (require 'init-pretty-symbols)
+(require 'init-autosaves)
+(require 'init-theme)
 (require 'init-keys)
 (require 'init-emacs-settings)
-(require 'init-magit)
 (require 'init-scala)
 (require 'init-shell)
 (require 'init-haskell)
