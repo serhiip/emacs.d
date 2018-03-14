@@ -70,10 +70,6 @@
    company-dabbrev-downcase nil
    company-idle-delay 0.2
    company-minimum-prefix-length 3)
-  ;;  :config
-  ;; disables TAB in company-mode, freeing it for yasnippet
-  ;;(define-key company-active-map [tab] nil)
-  ;;(define-key company-active-map (kbd "TAB") nil)
   )
 
 (use-package yasnippet
@@ -91,23 +87,9 @@
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (setq web-mode-markup-indent-offset 2)
 
-;; js-mode
-;; (add-to-list 'auto-mode-alist '("\\.json$" . js-mode))
-;; (add-hook 'js-mode-hook 'js2-minor-mode)
-;; (add-hook 'js2-mode-hook 'ac-js2-mode)
-;; (setq js2-highlight-level 3)
-;; (add-hook 'js-mode-hook 'auto-complete-mode)
-;; (add-hook 'js-mode-hook (lambda () (tern-mode t))) ;; npm install -g tern
-;; (eval-after-load 'tern
-;;    '(progn
-;;       (require 'tern-auto-complete)
-;;       (tern-ac-setup)))
 ;; helm
 (require 'helm-config)
 (helm-mode 1)
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
 
-;; (add-hook 'html-mode-hook
-;;           (lambda()
-;;             (setq sgml-basic-offset 2)))
