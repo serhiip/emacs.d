@@ -10,5 +10,16 @@
 (require 'scala-mode)
 (setq prettify-symbols-alist scala-prettify-symbols-alist)
 (prettify-symbols-mode)
+(defun add-scala-prettify-symbols-alist ()
+  (dolist (alias scala-prettify-symbols-alist)
+    (push alias prettify-symbols-alist)))
+
+(use-package scala-mode
+  :ensure t
+  :init
+  (require 'scala-mode-prettify-symbols)
+  (add-hook 'scala-mode-hook #'smartparens-strict-mode)
+  (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  (prettify-symbols-mode))
 
 (provide 'init-scala)
