@@ -9,7 +9,6 @@
 (column-number-mode 1)
 (global-hl-line-mode 1)
 
-
 (setq
  confirm-nonexistent-file-or-buffer nil
  completion-ignore-case t
@@ -21,5 +20,7 @@
 (setq-default indent-tabs-mode nil)
 (add-to-list 'exec-path "/usr/local/bin")
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(add-hook 'prog-mode-hook #'flycheck-mode)
 
 (provide 'init-emacs-settings)
