@@ -1,4 +1,12 @@
-(set-default-font "PragmataPro")
+;;; init.el --- My emacs initialization script
+;;; Commentary:
+
+;;; Has support for some langs I use, org-mode set up and
+;;; customization and some custom functions
+
+;;; Code:
+
+(set-frame-font "PragmataPro")
 (set-face-attribute 'default nil :height 130)
 (server-start)
 
@@ -13,28 +21,34 @@
                     ;;("melpa-stable" . "http://stable.melpa.org/packages/")
                    ))
 
-(setq package-list '(org
-                     use-package
-                     flycheck
-                     scala-mode
-                     web-mode
-                     helm
-                     neotree
-                     expand-region
-                     tern
-                     tern-auto-complete
-                     projectile))
+(defvar-local package-list '(org
+                             use-package
+                             flycheck
+                             scala-mode
+                             web-mode
+                             helm
+                             neotree
+                             expand-region
+                             tern
+                             tern-auto-complete
+                             projectile))
 
 (package-initialize)
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
 
+(require 'flycheck)
+(require 'company-dabbrev)
+(require 'company-dabbrev-code)
+(require 'yasnippet)
+
 (let ((default-directory (concat
                           user-emacs-directory
                           (convert-standard-filename "init"))))
   (normal-top-level-add-subdirs-to-load-path)
-  (add-to-list 'load-path default-directory))
+  (add-to-list 'load-path default-directory)
+  (add-to-list 'flycheck-emacs-lisp-load-path default-directory))
 
 (use-package use-package-ensure-system-package :ensure t)
 
@@ -88,3 +102,5 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (setq web-mode-markup-indent-offset 2)
+
+;;; init.el ends here
