@@ -19,7 +19,8 @@
   :init
   (require 'scala-mode-prettify-symbols)
   (add-hook 'scala-mode-hook #'smartparens-strict-mode)
-  (setq prettify-symbols-alist scala-prettify-symbols-alist)
+  (setq prettify-symbols-alist scala-prettify-symbols-alist
+        flycheck-scalastylerc "~/scalastyle_config.xml")
   (prettify-symbols-mode))
 
 (provide 'init-scala)
