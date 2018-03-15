@@ -52,14 +52,16 @@
 
 (use-package use-package-ensure-system-package :ensure t)
 
+(require 'init-autosaves)
+(require 'init-theme)
+(require 'init-emacs-settings)
+(require 'init-keys)
+(require 'init-org)
+
 (require 'init-magit)
 (require 'init-projectile)
 (require 'init-pretty-symbols)
 (require 'init-helm)
-(require 'init-autosaves)
-(require 'init-theme)
-(require 'init-keys)
-(require 'init-emacs-settings)
 (require 'init-scala)
 (require 'init-smartparens)
 (require 'init-shell)
@@ -67,7 +69,6 @@
 ;;(require 'init-dotty)
 (require 'init-elisp)
 (require 'init-ts)
-(require 'init-org)
 (require 'init-python)
 
 (require 'whitespace)
