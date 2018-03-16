@@ -2,17 +2,16 @@
 
 ;;; Commentary:
 
-;;; Remove default vc-mode and sets up magit
+;;; Remove default vc-mode and set up magit
 
 ;;; Code:
 
 (require 'use-package)
 
-(setq vc-handled-backends '())
-
 (use-package magit
   :ensure t
   :init
+  (setq vc-handled-backends '())
   (add-to-list 'auto-mode-alist '(".*_EDITMSG\\'" . magit-log))
   :bind
   (("C-x g" . 'magit-status)))
