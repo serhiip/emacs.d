@@ -39,9 +39,6 @@
     (package-install package)))
 
 (require 'flycheck)
-(require 'company-dabbrev)
-(require 'company-dabbrev-code)
-(require 'yasnippet)
 
 (let ((default-directory (concat
                           user-emacs-directory
@@ -51,6 +48,7 @@
   (add-to-list 'flycheck-emacs-lisp-load-path default-directory))
 
 (use-package use-package-ensure-system-package :ensure t)
+(use-package whitespace :ensure t)
 
 (require 'init-autosaves)
 (require 'init-theme)
@@ -70,38 +68,7 @@
 (require 'init-elisp)
 (require 'init-ts)
 (require 'init-python)
-
-(require 'whitespace)
-
-(use-package expand-region
-  :commands 'er/expand-region
-  :bind ("C-'" . er/expand-region))
-
-(use-package company
-  :diminish company-mode
-  :commands company-mode
-  :init
-  (setq
-   company-dabbrev-ignore-case t
-   company-dabbrev-code-ignore-case t
-   company-dabbrev-downcase nil
-   company-idle-delay 0.2
-   company-minimum-prefix-length 3)
-  )
-
-(use-package yasnippet
-  :diminish yas-minor-mode
-  :commands yas-minor-mode
-  :config (yas-reload-all))
-
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[gj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(setq web-mode-markup-indent-offset 2)
-
+(require 'init-company)
+(require 'init-web-mode)
+(require 'init-expand-region)
 ;;; init.el ends here
