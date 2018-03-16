@@ -1,5 +1,7 @@
 (require 'use-package)
 
+(setq vc-handled-backends '())
+
 (use-package magit
   :ensure t
   :init
