@@ -1,3 +1,11 @@
+;;; init-magit.el --- Git utilities
+
+;;; Commentary:
+
+;;; Remove default vc-mode and sets up magit
+
+;;; Code:
+
 (require 'use-package)
 
 (setq vc-handled-backends '())
@@ -10,3 +18,4 @@
   (("C-x g" . 'magit-status)))
 
 (provide 'init-magit)
+;;; init-magit.el ends here
