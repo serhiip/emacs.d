@@ -37,14 +37,14 @@
   (unless (package-installed-p package)
     (package-install package)))
 
-(require 'flycheck)
-
 (let ((default-directory (concat
                           user-emacs-directory
                           (convert-standard-filename "init"))))
   (normal-top-level-add-subdirs-to-load-path)
-  (add-to-list 'load-path default-directory)
-  (add-to-list 'flycheck-emacs-lisp-load-path default-directory))
+  (add-to-list 'load-path default-directory))
+
+(require 'flycheck)
+(setq flycheck-emacs-lisp-load-path 'inherit)
 
 (use-package use-package-ensure-system-package :ensure t)
 (use-package whitespace :ensure t)
