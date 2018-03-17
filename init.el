@@ -63,7 +63,7 @@
 (require 'init-smartparens)
 (require 'init-shell)
 (require 'init-haskell)
-;;(require 'init-dotty)
+;;(require 'init-dotty) ; experimental
 (require 'init-elisp)
 (require 'init-ts)
 (require 'init-python)
