@@ -1,3 +1,5 @@
+(require 'functions)
+
 (set-frame-parameter nil 'fullscreen 'fullboth)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -21,6 +23,10 @@
 (add-to-list 'exec-path "/usr/local/bin")
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(add-hook 'prog-mode-hook #'flycheck-mode)
+(add-hook
+ 'prog-mode-hook
+ #'(lambda ()
+     (flycheck-mode)
+     (prelude-font-lock-comment-annotations)))
 
 (provide 'init-emacs-settings)
