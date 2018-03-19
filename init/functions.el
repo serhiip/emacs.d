@@ -21,11 +21,10 @@
 
 (defun serhiip--take-notes-from-region (start end)
   (interactive "r")
-  (if (not (eq start end))
-      (progn
-        (serhiip--take-note-impl (buffer-substring start end))
-        (kill-region start end))
-    (user-error "Selection must be non-empty to take a note")))
+  (if (eq start end)
+      (user-error "Selection must be non-empty to take a note")
+    (serhiip--take-note-impl (buffer-substring start end))
+    (kill-region start end)))
 
 (defun serhiip--take-note-todo (note-text)
   (interactive "sSummary: ")
@@ -35,7 +34,7 @@
   (concat "* TODO " (string-trim note)))
 
 (defun serhiip--take-note-impl (lines)
-  (let* ((inside-project? (and
+  (let* ((inside-project-p (and
                            (fboundp 'projectile-project-p)
                            (projectile-project-p)))
 
@@ -45,7 +44,7 @@
                                 curr-filename
                                 (mapcar 'file-truename org-agenda-files)))
 
-         (file (if inside-project?
+         (file (if inside-project-p
                    (serhiip--org-file-path
                     (format "/%s.org" (projectile-project-name)))
                  (if editing-agenda-file?
