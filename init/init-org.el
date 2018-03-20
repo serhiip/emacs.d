@@ -42,8 +42,8 @@
    'org-mobile-post-pull-hook
    #'(lambda () (let ((from (concat mobile-dir-truename org-mobile-capture-file)))
              (serhiip--rsync from org-server-location))))
-  :bind (("C->"   . serhiip--take-notes-from-region)
-         ("C-c c" . serhiip--take-note-todo)))
+  :bind (("C->"   . serhiip-take-notes-from-region)
+         ("C-c c" . serhiip-take-note-todo)))
 
 (use-package org-bullets
   :ensure t
