@@ -28,11 +28,11 @@
                                  (sequence "TOREAD"          "|" "DONE")
                                  (sequence "BUG"             "|" "FIXED")
                                  (sequence "FEATURE" "DOING" "|" "DONE"))
-        org-capture-templates  '(("t" "Add to do list entry" entry (file+headline org-default-notes-file "to do")
+        org-capture-templates  '(("t" "To Do" entry (file+headline org-default-notes-file "to do")
                                   "** TODO %i %?\n  %a")
-                                 ("s" "Add to groceries list" entry (file+headline org-default-notes-file "groceries")
+                                 ("s" "To buy" entry (file+headline org-default-notes-file "groceries")
                                   "** TOBUY %i %?\n  %U\n  %a")
-                                 ("r" "Add to reading list" entry (file+headline org-default-notes-file "to read")
+                                 ("r" "To read" entry (file+headline org-default-notes-file "to read")
                                   "** TOREAD %i %?\n  %U\n  %a")
                                  ("f" "New feature" entry (file (serhiip-org-get-current-file))
                                   "* FEATURE %i %?\n  %U\n  %a")
@@ -55,6 +55,6 @@
   :ensure t
   :after org
   :init
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (add-hook 'org-mode-hook #'(lambda () (org-bullets-mode 1))))
 
 (provide 'init-org)

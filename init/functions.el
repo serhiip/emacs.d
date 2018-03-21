@@ -52,10 +52,12 @@ This functions should be added to the hooks of major modes for programming."
    nil '(("\\<\\(\\(FIX\\(ME\\)?\\|TODO\\|OPTIMIZE\\|HACK\\|REFACTOR\\):\\)"
           1 font-lock-warning-face t))))
 
-(defun serhiip--org-file-path (file)
+(defun serhiip-org-file-path (file)
+  "Get full path to org file named FILE."
   (convert-standard-filename (concat org-directory file)))
 
-(defun serhiip--org-get-current-file ()
+(defun serhiip-org-get-current-file ()
+  "Get org file for project currently opened."
   (or serhiip--org-current-file org-default-notes-file))
 
 (defun serhiip--take-note-impl (lines)
