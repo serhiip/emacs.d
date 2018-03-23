@@ -70,4 +70,5 @@
 (require 'init-company)
 (require 'init-web-mode)
 (require 'init-expand-region)
+
 ;;; init.el ends here
