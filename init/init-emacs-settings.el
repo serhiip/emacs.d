@@ -27,6 +27,7 @@
  'prog-mode-hook
  #'(lambda ()
      (flycheck-mode)
-     (prelude-font-lock-comment-annotations)))
+     (prelude-font-lock-comment-annotations)
+     (company-mode)))
 
 (provide 'init-emacs-settings)
