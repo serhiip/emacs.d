@@ -28,8 +28,8 @@
   ;; C-M-\ formats current region
   :init (add-hook 'haskell-mode-hook #'hindent-mode))
 
- (use-package flycheck-haskell
-   :ensure t
-   :init (add-hook 'flycheck-mode-hook  #'flycheck-haskell-setup))
+(use-package flycheck-haskell
+  :ensure t
+  :init (add-hook 'flycheck-mode-hook  #'flycheck-haskell-setup))
 
 (provide 'init-haskell)

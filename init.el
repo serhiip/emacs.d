@@ -51,6 +51,7 @@
 
 (require 'init-autosaves)
 (require 'init-theme)
+(require 'init-company)
 (require 'init-emacs-settings)
 (require 'init-keys)
 (require 'init-org)
@@ -67,7 +68,6 @@
 (require 'init-elisp)
 (require 'init-ts)
 (require 'init-python)
-(require 'init-company)
 (require 'init-web-mode)
 (require 'init-expand-region)
 
