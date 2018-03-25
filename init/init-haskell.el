@@ -1,7 +1,14 @@
 (require 'use-package)
+(require 'company)
 
 (use-package haskell-interactive-mode)
 (use-package haskell-process)
+
+(defun serhiip--setup-haskell-company ()
+  "Make company suggest stuff from TAGS in `haskell-mode'."
+  (set
+   (make-local-variable 'company-backends)
+   '(company-dabbrev-code company-gtags company-etags company-keywords)))
 
 (use-package haskell-mode
   :ensure t
@@ -11,6 +18,7 @@
               haskell-tags-on-save t
               tags-revert-without-query t)
   (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
+  (add-hook 'haskell-mode-hook #'serhiip--setup-haskell-company)
   :bind (:map haskell-mode-map
               ("C-`"     . haskell-interactive-bring)
               ("C-c C-l" . haskell-process-load-or-reload)
@@ -33,3 +41,5 @@
   :init (add-hook 'flycheck-mode-hook  #'flycheck-haskell-setup))
 
 (provide 'init-haskell)
+
+;;; init-haskell.el ends here
