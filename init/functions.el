@@ -17,7 +17,7 @@
 (defun serhiip-rsync (src dest)
   "Copy files from SRC to DEST via rsync command."
   (shell-command (format
-                  "rsync -avz %s %s"
+                  "rsync -avz --chmod=ugo=rwX %s %s"
                   (shell-quote-argument src)
                   (shell-quote-argument dest))))
 
