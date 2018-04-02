@@ -79,4 +79,17 @@ This functions should be added to the hooks of major modes for programming."
 
 (provide 'functions)
 
+(defun serhiip-add-elisp-docs ()
+  "Add docs for current elisp buffer."
+  (interactive)
+  (save-excursion
+    (with-current-buffer (current-buffer)
+      (let ((filename (car (last (split-string buffer-file-name "/")))))
+        (goto-char (point-min))
+        (insert (format
+                 ";;; %s --- Common functions -*- lexical-binding: t; -*-\n\n;;; Commentary:\n\n;;; Code:\n\n"
+                 filename))
+        (goto-char (point-max))
+        (insert (format "\n\n;;; %s ends here" filename))))))
+
 ;;; functions.el ends here
