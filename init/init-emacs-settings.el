@@ -1,4 +1,14 @@
+;;; init-emacs-settings.el --- Settings -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Disable most of GUI and various stuff
+
+;;; Code:
+
 (require 'functions)
+(require 'whitespace)
+(require 'js)
 
 (set-frame-parameter nil 'fullscreen 'fullboth)
 (menu-bar-mode -1)
@@ -31,3 +41,5 @@
      (company-mode)))
 
 (provide 'init-emacs-settings)
+
+;;; init-emacs-settings.el ends here

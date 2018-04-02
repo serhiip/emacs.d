@@ -1,4 +1,4 @@
-;;; init-web-mode.el --- web developemnt mode setup
+;;; init-web-mode.el --- Web Developemnt -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -17,4 +17,5 @@
 (setq web-mode-markup-indent-offset 2)
 
 (provide 'init-web-mode)
+
 ;;; init-web-mode.el ends here

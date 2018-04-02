@@ -1,4 +1,4 @@
-;;; init-projectile.el --- Common functions -*- lexical-binding: t; -*-
+;;; init-projectile.el --- Project Management -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 

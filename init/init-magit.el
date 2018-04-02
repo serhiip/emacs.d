@@ -1,4 +1,4 @@
-;;; init-magit.el --- Git utilities
+;;; init-magit.el --- Git utilities -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -11,7 +11,7 @@
 (use-package magit
   :ensure t
   :init
-  (setq vc-handled-backends '())
+  (setq vc-handled-backends '())  ;; disable default vc
   (add-to-list 'auto-mode-alist '(".*_EDITMSG\\'" . magit-log))
   :bind
   (("C-x g" . 'magit-status)))

@@ -1,3 +1,11 @@
+;;; init-haskell.el --- Haskell -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Sets up haskell-mode and company to work well for haskell sources
+
+;;; Code:
+
 (require 'use-package)
 (require 'company)
 

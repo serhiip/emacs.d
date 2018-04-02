@@ -1,4 +1,4 @@
-;;; init-company.el -- Autocompletion framework setup
+;;; init-company.el -- Autocompletion -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -21,4 +21,3 @@
 (provide 'init-company)
 
 ;;; init-company.el ends here
-

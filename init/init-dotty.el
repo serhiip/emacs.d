@@ -16,11 +16,13 @@
 (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
 (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
 
+(require 'lsp-methods)
+
 (add-hook 'scala-mode-hook '(lambda ()
-  (setq-local flycheck-disabled-checkers '(scala))
-  (flycheck-mode)
-  (lsp-scala-mode-enable)
-))
+                              (setq-local flycheck-disabled-checkers '(scala))
+                              (flycheck-mode)
+                              (lsp-scala-mode-enable)))
 
 (provide 'init-dotty)
+
 ;;; init-dotty.el ends here

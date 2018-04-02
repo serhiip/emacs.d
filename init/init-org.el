@@ -1,3 +1,11 @@
+;;; init-org.el --- Personal Organazier -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Custom hotkeys, keywords, templates, file setup and syncronization
+
+;;; Code:
+
 (require 'use-package)
 (require 'org-mobile)
 (require 'functions)
@@ -6,13 +14,16 @@
 (defvar mobile-dir-truename)
 
 (defun serhiip--push-notes-to-server ()
+  "Perform rsync for org files to send the to server."
   (serhiip-rsync mobile-dir-truename org-server-location))
 
 (defun serhiip--pull-mobileorg-file ()
+  "Perform rsync from server to local sync folder."
   (let ((from (concat org-server-location org-mobile-capture-file)))
     (serhiip-rsync from mobile-dir-truename)))
 
 (defun serhiip--push-mobileorg-file ()
+  "Perform rsync of mobileorg file."
   (let ((from (concat mobile-dir-truename org-mobile-capture-file)))
     (serhiip-rsync from org-server-location)))
 
@@ -58,3 +69,5 @@
   (add-hook 'org-mode-hook #'(lambda () (org-bullets-mode 1))))
 
 (provide 'init-org)
+
+;;; init-org.el ends here

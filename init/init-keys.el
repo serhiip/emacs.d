@@ -1,3 +1,9 @@
+;;; init-keys.el --- Hotkeys -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (global-set-key (kbd "C-x w") 'whitespace-mode)
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
@@ -11,3 +17,5 @@
                                 (find-file (concat user-emacs-directory "init.el"))))
 
 (provide 'init-keys)
+
+;;; init-keys.el ends here

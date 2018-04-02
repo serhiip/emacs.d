@@ -1,3 +1,9 @@
+;;; init-ts.el --- Typescript -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'use-package)
 
 (use-package company :ensure t)
@@ -25,3 +31,5 @@
               ("C-c C-p" . tide-organize-imports)))
 
 (provide 'init-ts)
+
+;;; init-ts.el ends here

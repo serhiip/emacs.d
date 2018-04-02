@@ -1,3 +1,9 @@
+;;; init-smartparens.el --- Better Parens -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'use-package)
 
 (use-package smartparens
@@ -10,7 +16,9 @@
   sp-restrict-to-pairs-interactive
   sp-local-pair
   :init
-  (setq sp-interactive-dwim t)
+  (if (boundp 'sp-interactive-dwim)
+      (setq sp-interactive-dwim t))
+  (require 'smartparens)
   :config
   (require 'smartparens-config)
   (sp-use-smartparens-bindings)
@@ -23,3 +31,5 @@
   (bind-key "C-<backspace>" 'sp-backward-kill-sexp smartparens-mode-map))
 
 (provide 'init-smartparens)
+
+;;; init-smartparens.el ends here

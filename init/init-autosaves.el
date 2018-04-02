@@ -1,3 +1,11 @@
+;;; init-autosaves.el --- Init autosaves -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Persist autosaves in designated dir
+
+;;; Code:
+
 (setq
    backup-by-copying t
    backup-directory-alist '(("." . "~/.saves"))
@@ -7,3 +15,5 @@
    version-control t)
 
 (provide 'init-autosaves)
+
+;;; init-autosaves.el ends here

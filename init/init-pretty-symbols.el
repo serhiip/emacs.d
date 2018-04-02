@@ -1,5 +1,13 @@
-;; For emacs25
-(setq prettify-symbols-unprettify-at-point 'right-edge)
+;;; init-pretty-symbols.el --- Pretty Symbols -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Prettify some comonly used programming synmbols.  Via
+;;; https://gist.github.com/DeLaGuardo/fe1f3d9397d6ef7468460d54d5601156#gistcomment-2112387
+
+;;; Code:
+
+(setq prettify-symbols-unprettify-at-point 'right-edge)  ;; For emacs25
 
 (defconst pragmatapro-prettify-symbols-alist
   (mapcar (lambda (s)
@@ -180,12 +188,14 @@
             ("\">"       #XE8B0))))
 
 (defun add-pragmatapro-prettify-symbols-alist ()
+  "Add pretty symbols to global list."
   (dolist (alias pragmatapro-prettify-symbols-alist)
     (push alias prettify-symbols-alist)))
 
-(add-hook 'prog-mode-hook
-          #'add-pragmatapro-prettify-symbols-alist)
+(add-hook 'prog-mode-hook #'add-pragmatapro-prettify-symbols-alist)
 
 (global-prettify-symbols-mode +1)
 
 (provide 'init-pretty-symbols)
+
+;;; init-pretty-symbols.el ends here

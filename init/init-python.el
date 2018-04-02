@@ -1,4 +1,11 @@
+;;; init-python.el --- Python -*- lexical-binding: t; -*-
+
+;;; Commentary:
+
+;;; Code:
+
 (require 'use-package)
+(require 'flycheck-pycheckers)
 
 (use-package flycheck-pycheckers
   :ensure t
@@ -8,3 +15,5 @@
   :ensure-system-package (pylint . "pip install pylint"))
 
 (provide 'init-python)
+
+;;; init-python.el ends here

@@ -2,6 +2,8 @@
 
 ;;; Commentary:
 
+;;; Semantically expands selection on further keypresses
+
 ;;; Code:
 
 (require 'use-package)
@@ -11,5 +13,5 @@
   :bind ("C-'" . er/expand-region))
 
 (provide 'init-expand-region)
-;;; init-expand-region.el ends here
 
+;;; init-expand-region.el ends here
