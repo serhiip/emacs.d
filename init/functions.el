@@ -1,6 +1,7 @@
 ;;; functions.el --- Common functions -*- lexical-binding: t; -*-
 
 ;;; Commentary:
+
 ;;; A set of various functions used across the project
 
 ;;; Code:
@@ -82,14 +83,13 @@ This functions should be added to the hooks of major modes for programming."
 (defun serhiip-add-elisp-docs ()
   "Add docs for current elisp buffer."
   (interactive)
-  (save-excursion
-    (with-current-buffer (current-buffer)
-      (let ((filename (car (last (split-string buffer-file-name "/")))))
-        (goto-char (point-min))
-        (insert (format
-                 ";;; %s --- Common functions -*- lexical-binding: t; -*-\n\n;;; Commentary:\n\n;;; Code:\n\n"
-                 filename))
-        (goto-char (point-max))
-        (insert (format "\n\n;;; %s ends here" filename))))))
+  (let ((filename (car (last (split-string buffer-file-name "/")))))
+    (goto-char (point-max))
+    (insert (format "\n;;; %s ends here" filename))
+    (goto-char (point-min))
+    (insert (format ";;; %s --- " filename))
+    (let ((position (point)))
+      (insert "-*- lexical-binding: t; -*-\n\n;;; Commentary:\n\n;;; Code:\n\n")
+      (goto-char position))))
 
 ;;; functions.el ends here
