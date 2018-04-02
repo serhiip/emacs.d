@@ -61,6 +61,7 @@ This functions should be added to the hooks of major modes for programming."
   (or serhiip--org-current-file org-default-notes-file))
 
 (defun serhiip--take-note-impl (lines)
+  "Take not from rectangle or by asking.  Either is represented as LINES."
   (let* ((inside-project-p (and
                             (fboundp 'projectile-project-p)
                             (projectile-project-p)))
@@ -68,7 +69,7 @@ This functions should be added to the hooks of major modes for programming."
                             buffer-file-truename
                             (mapcar 'file-truename org-agenda-files)))
          (file (if inside-project-p
-                   (serhiip--org-file-path
+                   (serhiip-org-file-path
                     (format "/%s.org" (projectile-project-name)))
                  (if editing-agenda-p
                      buffer-file-truename
