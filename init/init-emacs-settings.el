@@ -20,6 +20,7 @@
 (electric-pair-mode 1)
 (column-number-mode 1)
 (global-hl-line-mode 1)
+(winner-mode 1)
 
 (setq
  confirm-nonexistent-file-or-buffer nil
