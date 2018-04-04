@@ -78,8 +78,6 @@ This functions should be added to the hooks of major modes for programming."
     (let ((serhiip--org-current-file file))
       (org-capture-string lines))))
 
-(provide 'functions)
-
 (defun serhiip-add-elisp-docs ()
   "Add docs for current elisp buffer."
   (interactive)
@@ -91,5 +89,7 @@ This functions should be added to the hooks of major modes for programming."
     (let ((position (point)))
       (insert "-*- lexical-binding: t; -*-\n\n;;; Commentary:\n\n;;; Code:\n\n")
       (goto-char position))))
+
+(provide 'functions)
 
 ;;; functions.el ends here
