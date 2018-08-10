@@ -75,8 +75,16 @@ This functions should be added to the hooks of major modes for programming."
                  (if editing-agenda-p
                      buffer-file-truename
                    org-default-notes-file))))
-    (let ((serhiip--org-current-file file))
-      (org-capture-string lines))))
+    (if (file-exists-p file)
+        (serhiip-set-org-file-capture file lines)
+      (if (yes-or-no-p (format "File %s is missing. Create?" file))
+          (progn
+            (write-region "" nil file)
+            (serhiip-set-org-file-capture file lines))))))
+
+(defun serhiip-set-org-file-capture (file lines)
+  "Set current org FILE name and capture LINES provided."
+  (let ((serhiip--org-current-file file)) (org-capture-string lines)))
 
 (defun serhiip-add-elisp-docs ()
   "Add docs for current elisp buffer."
