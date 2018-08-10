@@ -70,5 +70,6 @@
 (require 'init-python)
 (require 'init-web-mode)
 (require 'init-expand-region)
+(require 'init-reveal)
 
 ;;; init.el ends here
