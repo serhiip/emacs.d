@@ -39,15 +39,20 @@
                                  (sequence "TOREAD"          "|" "DONE")
                                  (sequence "BUG"             "|" "FIXED")
                                  (sequence "FEATURE" "DOING" "|" "DONE"))
-        org-capture-templates  '(("t" "To Do" entry (file+headline org-default-notes-file "to do")
+        org-capture-templates  '(("t" "To Do" entry
+                                  (file+headline org-default-notes-file "to do")
                                   "** TODO %i %?\n  %a")
-                                 ("s" "To buy" entry (file+headline org-default-notes-file "groceries")
+                                 ("s" "To buy" entry
+                                  (file+headline org-default-notes-file "to buy")
                                   "** TOBUY %i %?\n  %U\n  %a")
-                                 ("r" "To read" entry (file+headline org-default-notes-file "to read")
+                                 ("r" "To read" entry
+                                  (file+headline org-default-notes-file "to read")
                                   "** TOREAD %i %?\n  %U\n  %a")
-                                 ("f" "New feature" entry (file (serhiip-org-get-current-file))
+                                 ("f" "New feature" entry
+                                  (file (lambda () (serhiip-org-get-current-file)))
                                   "* FEATURE %i %?\n  %U\n  %a")
-                                 ("b" "Bug" entry (file (serhiip-org-get-current-file))
+                                 ("b" "Bug" entry
+                                  (file (lambda () (serhiip-org-get-current-file)))
                                   "* BUG %i %?\n  %U\n  %a"))
         org-todo-keyword-faces '(("TODO" . "red")
                                  ("DOING" . "yellow")
