@@ -43,9 +43,6 @@
   (normal-top-level-add-subdirs-to-load-path)
   (add-to-list 'load-path default-directory))
 
-(require 'flycheck)
-(setq flycheck-emacs-lisp-load-path 'inherit)
-
 (use-package use-package-ensure-system-package :ensure t)
 (use-package whitespace :ensure t)
 (use-package yaml-mode :ensure t)
