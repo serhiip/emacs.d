@@ -28,7 +28,7 @@
   (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
   (add-hook 'haskell-mode-hook #'serhiip--setup-haskell-company)
   :bind (:map haskell-mode-map
-              ("C-`"     . haskell-interactive-bring)
+              ("C-;"     . haskell-interactive-bring)
               ("C-c C-l" . haskell-process-load-or-reload)
               ("C-c C-t" . haskell-process-do-type)
               ("C-c C-i" . haskell-process-do-info)
