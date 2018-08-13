@@ -48,6 +48,7 @@
 
 (use-package use-package-ensure-system-package :ensure t)
 (use-package whitespace :ensure t)
+(use-package yaml-mode :ensure t)
 
 (require 'init-autosaves)
 (require 'init-theme)
