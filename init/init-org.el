@@ -38,13 +38,17 @@
                                  (sequence "TOBUY"           "|" "DONE")
                                  (sequence "TOREAD"          "|" "DONE")
                                  (sequence "BUG"             "|" "FIXED")
-                                 (sequence "FEATURE" "DOING" "|" "DONE"))
+                                 (sequence "FEATURE" "DOING" "|" "DONE")
+                                 (sequence "MEMO"          "|" "DONE"))
         org-capture-templates  '(("t" "To Do" entry
                                   (file+headline org-default-notes-file "to do")
                                   "** TODO %i %?\n  %a")
-                                 ("s" "To buy" entry
+                                 ("s" "To Buy" entry
                                   (file+headline org-default-notes-file "to buy")
                                   "** TOBUY %i %?\n  %U\n  %a")
+                                 ("m" "To Memo" entry
+                                  (file+headline org-default-notes-file "to memo")
+                                  "** MEMO %i %?\n  %a")
                                  ("r" "To read" entry
                                   (file+headline org-default-notes-file "to read")
                                   "** TOREAD %i %?\n  %U\n  %a")
@@ -54,12 +58,13 @@
                                  ("b" "Bug" entry
                                   (file (lambda () (serhiip-org-get-current-file)))
                                   "* BUG %i %?\n  %U\n  %a"))
-        org-todo-keyword-faces '(("TODO" . "red")
-                                 ("DOING" . "yellow")
+        org-todo-keyword-faces '(("TODO"    . "red")
+                                 ("MEMO"    . "firebrick")
+                                 ("DOING"   . "yellow")
                                  ("FEATURE" . "firebrick")
-                                 ("BUG" . "magenta")
-                                 ("TOREAD" . "dark cyan")
-                                 ("TOBUY" . "wheat"))
+                                 ("BUG"     . "magenta")
+                                 ("TOREAD"  . "dark cyan")
+                                 ("TOBUY"   . "wheat"))
         org-ellipsis           " ⤵")
   (add-hook 'org-mobile-post-push-hook #'serhiip--push-notes-to-server)
   (add-hook 'org-mobile-pre-pull-hook #'serhiip--pull-mobileorg-file)
