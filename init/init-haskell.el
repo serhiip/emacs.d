@@ -1,4 +1,4 @@
-;;; init-haskell.el --- Haskell -*- lexical-binding: t; -*-
+;;; init-haskell.el --- Haskell support using lsp-haskell -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -8,9 +8,9 @@
 
 (require 'use-package)
 (require 'company)
-
-(use-package haskell-interactive-mode)
-(use-package haskell-process)
+(require 'lsp-ui)
+(require 'lsp-haskell)
+(require 'flycheck)
 
 (defun serhiip--setup-haskell-company ()
   "Make company suggest stuff from TAGS in `haskell-mode'."
@@ -20,33 +20,30 @@
 
 (use-package haskell-mode
   :ensure t
-  :init (setq haskell-process-suggest-remove-import-lines t
-              haskell-process-auto-import-loaded-modules t
-              haskell-process-log t
-              haskell-tags-on-save t
-              tags-revert-without-query t)
-  (add-hook 'haskell-mode-hook #'interactive-haskell-mode)
+  :init
   (add-hook 'haskell-mode-hook #'serhiip--setup-haskell-company)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (add-hook 'haskell-mode-hook #'lsp-haskell-enable)
+  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  (add-hook 'haskell-mode-hook '(lsp-ui-sideline-enable nil))
+  (add-hook 'haskell-mode-hook '(flycheck-disable-checker "haskell-ghc"))
+  (setq
+   haskell-tags-on-save t
+   tags-revert-without-query t)
   :bind (:map haskell-mode-map
               ("C-;"     . haskell-interactive-bring)
-              ("C-c C-l" . haskell-process-load-or-reload)
-              ("C-c C-t" . haskell-process-do-type)
-              ("C-c C-i" . haskell-process-do-info)
-              ("C-c C-c" . haskell-process-cabal-build)
-              ("C-c C-k" . haskell-interactive-mode-clear)
-              ("M-."     . haskell-mode-jump-to-def-or-tag)
+              ("M-n"     . flycheck-next-error)
+              ("M-p"     . flycheck-previous-error)
               ("C-c C-f" . haskell-mode-stylish-buffer))
-  :ensure-system-package (stylish-haskell . "stack install stylish-haskell"))
+  :ensure-system-package
+  ((stylish-haskell . "stack install stylish-haskell")
+   (hlint . "stack install hlint")))
 
 (use-package hindent
   :ensure t
   ;; M-q   formats current block
   ;; C-M-\ formats current region
   :init (add-hook 'haskell-mode-hook #'hindent-mode))
-
-(use-package flycheck-haskell
-  :ensure t
-  :init (add-hook 'flycheck-mode-hook  #'flycheck-haskell-setup))
 
 (provide 'init-haskell)
 
