@@ -21,15 +21,16 @@
 (use-package haskell-mode
   :ensure t
   :init
-  (add-hook 'haskell-mode-hook #'serhiip--setup-haskell-company)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (add-hook 'haskell-mode-hook #'lsp-haskell-enable)
   (add-hook 'haskell-mode-hook 'flycheck-mode)
-  (add-hook 'haskell-mode-hook '(lsp-ui-sideline-enable nil))
-  (add-hook 'haskell-mode-hook '(flycheck-disable-checker "haskell-ghc"))
+  (add-hook 'haskell-mode-hook #'serhiip--setup-haskell-company)
   (setq
    haskell-tags-on-save t
-   tags-revert-without-query t)
+   tags-revert-without-query t
+   lsp-ui-sideline-show-flycheck nil
+   lsp-ui-doc-position 'at-point
+   lsp-ui-sideline-delay 0.2)
   :bind (:map haskell-mode-map
               ("C-;"     . haskell-interactive-bring)
               ("M-n"     . flycheck-next-error)
