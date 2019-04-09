@@ -71,4 +71,5 @@
 (require 'init-expand-region)
 (require 'init-reveal)
 
+(org-todo-list)
 ;;; init.el ends here
