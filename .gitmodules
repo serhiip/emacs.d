@@ -1,3 +1,6 @@
 [submodule "init/emacs-lsp-dotty"]
 	path = init/emacs-lsp-dotty
 	url = https://github.com/serhiip/emacs-lsp-dotty.git
+[submodule "leaf.el"]
+	path = init/leaf
+	url = https://github.com/conao3/leaf.el.git
