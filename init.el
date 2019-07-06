@@ -53,7 +53,8 @@
     (delete-old-versions . t)
     (kept-new-versions . 6)
     (kept-old-versions . 2)
-    (version-control . t))
+    (version-control . t)
+    (custom-file . (concat user-emacs-directory "custom.el")))
   :custom
   ;; (custom-enabled-themes . '(tsdh-dark))
   :bind (("<up>" . nil) ("<right>" . nil) ("<left>" . nil) ("<down>" . nil)))
@@ -205,4 +206,5 @@
 
 
 (org-todo-list)
+
 ;;; init.el ends here
