@@ -182,7 +182,11 @@
   :config
   (push 'company-lsp company-backends))
 
-(leaf all-the-icons :ensure t :require t)
+(leaf all-the-icons
+  :ensure t
+  :require t
+  :custom
+  (company-box-icons-alist . (quote company-box-icons-all-the-icons)))
 
 (leaf company-box
   :ensure t
