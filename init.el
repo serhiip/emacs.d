@@ -1,4 +1,4 @@
-;;; init.el --- My emacs configuration
+;;; init.el --- My emacs configuration -*- coding: utf-8 -*-
 ;;; Commentary:
 
 ;;; Has support for some langs I use, org-mode set up and
@@ -8,8 +8,8 @@
 
 (require 'files)
 
-;;(set-frame-font "PragmataPro Mono Liga")
-;;(set-face-attribute 'default nil :height 130)
+(set-frame-font "PragmataPro Mono Liga")
+(set-face-attribute 'default nil :height 130)
 
 (prog1 "Load leaf.el"
   (let ((default-directory (concat
@@ -55,7 +55,7 @@
     (kept-old-versions . 2)
     (version-control . t))
   :custom
-  (custom-enabled-themes . '(tsdh-dark))
+  ;; (custom-enabled-themes . '(tsdh-dark))
   :bind (("<up>" . nil) ("<right>" . nil) ("<left>" . nil) ("<down>" . nil)))
 
 (leaf whitespace
@@ -66,10 +66,10 @@
 
 (leaf monokai-theme
   :config
+  (load-theme 'monokai t)
   :after package
   :ensure t
-  :disable t
-  (load-theme 'monokai t))
+  :disabled nil)
 
 (leaf winner
   :config
@@ -81,6 +81,9 @@
 (leaf flycheck
   :after prog-mode
   :ensure t
+  :config
+  (global-flycheck-mode t)
+  :disabled nil
   :setq `((flycheck-emacs-lisp-load-path . 'inherit))
   :hook (prog-mode-hook . flycheck-mode))
 
@@ -111,6 +114,94 @@
   :ensure t
   :setq `((vc-handled-backends . '()))
   :bind (("C-x g" . magit-status)))
+
+(leaf helm
+  :ensure t
+  :after package
+  :config
+  (helm-mode t)
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  :bind
+  (("C-s"     . helm-occur)
+   ("C-x C-f" . helm-find-files)
+   (:global-map
+    ([remap jump-to-register] . helm-register)
+    ([remap list-buffers]     . helm-mini)))
+  :custom
+  (helm-display-source-at-screen-top . nil)
+  :custom-face
+  (helm-source-header . '((t (:background "#22083397778B" :foreground "white" :weight bold :height 0.8)))))
+
+(leaf lsp-mode
+  :ensure t
+  :after prog-mode
+  :require t
+  :setq `((lsp-enable-snippet . nil))
+  :custom
+  (lsp-prefer-flymake . nil))
+
+(leaf eltags
+  :setq
+  `((tags-revert-without-query . t)))
+
+(leaf haskell-mode
+  :ensure t
+  :require t
+  :init
+  (defun fmt-haskell-file ()
+    "Format current file using brittany."
+    (interactive)
+    (async-shell-command
+     (format
+      "brittany --write-mode=inplace %s"
+      (buffer-file-name (current-buffer))))))
+
+(leaf lsp-haskell
+  :ensure t
+  :after lsp-mode haskell-mode
+  :require t
+  :config
+  (eval-after-load 'lsp (add-hook 'haskell-mode-hook 'lsp))
+  :setq
+  `((lsp-haskell-process-path-hie . "hie-wrapper")
+    (haskell-tags-on-save . nil)))
+
+(leaf company
+  :ensure t
+  :after lsp-mode
+  :require t
+  :hook (after-init-hook . global-company-mode)
+  :setq
+  `((company-idle-delay . 0.2)
+    (company-minimum-prefix-length . 2)))
+
+(leaf company-lsp
+  :ensure t
+  :after lsp-mode company
+  :config
+  (push 'company-lsp company-backends))
+
+(leaf all-the-icons :ensure t :require t)
+
+(leaf company-box
+  :ensure t
+  :after company all-the-icons
+  :require t
+  :config
+  (eval-after-load 'company-box (add-hook 'company-mode-hook 'company-box-mode)))
+
+(leaf python-mode
+  :require t
+  :ensure t
+  :hook (python-mode-hook . lsp))
+
+(leaf flycheck-pycheckers
+  :ensure t
+  :require t
+  :after python-mode flycheck
+  :config
+  (with-eval-after-load 'flycheck
+    (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
 
 
 (org-todo-list)

@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 
-;;; Custom hotkeys, keywords, templates, file setup and syncronization
+;;; Custom hotkeys, keywords, templates, file setup and synchronisation
 
 ;;; Code:
 
