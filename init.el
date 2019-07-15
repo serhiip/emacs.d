@@ -183,6 +183,7 @@
   (push 'company-lsp company-backends))
 
 (leaf all-the-icons
+  ;; M-x all-the-icons-install-fonts
   :ensure t
   :require t
   :custom
