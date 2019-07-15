@@ -48,7 +48,6 @@
     (completion-ignore-case . t)
     (read-file-name-completion-ignore-case . t)
     (inhibit-startup-screen . t)
-    (whitespace-line-column . 120)
     (indent-tabs-mode . nil)
     (backup-by-copying . t)
     (backup-directory-alist . '(("." . "~/.saves")))
@@ -62,9 +61,9 @@
   :bind (("<up>" . nil) ("<right>" . nil) ("<left>" . nil) ("<down>" . nil)))
 
 (leaf whitespace
+  :require t
   :setq
   `((whitespace-line-column . 120))
-  :require t
   :bind (("C-x w" . whitespace-mode)))
 
 (leaf monokai-theme
