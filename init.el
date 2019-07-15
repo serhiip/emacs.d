@@ -29,6 +29,8 @@
       :config
       (package-initialize))))
 
+(require 'functions)
+
 (leaf custom
   :config
   (add-to-list 'exec-path "/usr/local/bin")
@@ -96,8 +98,45 @@
 
 (leaf org
   :ensure t
+  :require t
+  :setq
+  `((serhiip-org-file-path . "~/org")
+    (org-default-notes-file . '(serhiip-org-file-path "/gtd.org"))
+    (org-todo-keywords . '((sequence "TODO" "WAIT"     "|" "DONE")
+                           (sequence "TOBUY"           "|" "DONE")
+                           (sequence "TOREAD"          "|" "DONE")
+                           (sequence "BUG"             "|" "FIXED")
+                           (sequence "FEATURE" "DOING" "|" "DONE")
+                           (sequence "MEMO"            "|" "DONE")))
+    (org-capture-templates . '(("t" "To Do" entry
+				(file+headline org-default-notes-file "to do")
+				"** TODO %i %?\n  %a")
+                               ("s" "To Buy" entry
+				(file+headline org-default-notes-file "to buy")
+				"** TOBUY %i %?\n  %U\n  %a")
+                               ("m" "To Memo" entry
+				(file+headline org-default-notes-file "to memo")
+				"** MEMO %i %?\n  %a")
+                               ("r" "To read" entry
+				(file+headline org-default-notes-file "to read")
+				"** TOREAD %i %?\n  %U\n  %a")
+                               ("f" "New feature" entry
+				(file (lambda () (serhiip-org-get-current-file)))
+				"* FEATURE %i %?\n  %U\n  %a")
+                               ("b" "Bug" entry
+				(file (lambda () (serhiip-org-get-current-file)))
+				"* BUG %i %?\n  %U\n  %a")))
+    (org-todo-keyword-faces . '(("TODO"    . "red")
+				("MEMO"    . "firebrick")
+				("DOING"   . "yellow")
+				("FEATURE" . "firebrick")
+				("BUG"     . "magenta")
+				("TOREAD"  . "dark cyan")
+				("TOBUY"   . "wheat")))
+    (org-ellipsis . " ⤵"))
   :bind (("C-c a" . org-agenda)
-	 ("C-c c" . org-capture)))
+	 ("C->"   . serhiip-take-notes-from-region)
+         ("C-c c" . serhiip-take-note-todo)))
 
 (leaf newcomment
   :bind (("C-<tab>" . comment-or-uncomment-region)))

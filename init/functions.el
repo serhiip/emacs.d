@@ -11,7 +11,9 @@
 (require 'files)
 (require 'org)
 (require 'org-capture)
-(require 'projectile)
+(require 'leaf)
+
+(leaf projectile :ensure t)
 
 (defvar serhiip--org-current-file nil)
 
