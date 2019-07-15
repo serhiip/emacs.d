@@ -6,18 +6,19 @@
 
 ;;; Code:
 
-(require 'files)
-
-(set-frame-font "PragmataPro Mono Liga")
-(set-face-attribute 'default nil :height 130)
-
-(prog1 "Load leaf.el"
-  (let ((default-directory (concat
+(let ((default-directory (concat
                           user-emacs-directory
                           (convert-standard-filename "init"))))
     (normal-top-level-add-subdirs-to-load-path)
     (add-to-list 'load-path default-directory))
-  (require 'leaf)
+
+(require 'files)
+(require 'leaf)
+
+;;(set-frame-font "PragmataPro Mono Liga")
+;;(set-face-attribute 'default nil :height 130)
+
+(prog1 "Load leaf.el"
   (leaf leaf
     :doc "Initialize leaf dependent packages"
     :config
