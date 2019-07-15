@@ -15,8 +15,8 @@
 (require 'files)
 (require 'leaf)
 
-;;(set-frame-font "PragmataPro Mono Liga")
-;;(set-face-attribute 'default nil :height 130)
+(set-frame-font "PragmataPro Mono Liga")
+(set-face-attribute 'default nil :height 130)
 
 (prog1 "Load leaf.el"
   (leaf leaf
