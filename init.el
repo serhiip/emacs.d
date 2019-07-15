@@ -41,6 +41,7 @@
   (fset 'yes-or-no-p 'y-or-n-p)
   ;; (set-frame-parameter nil 'fullscreen 'fullboth)
   (global-hl-line-mode 1)
+  (load custom-file)
   :setq
   `((confirm-nonexistent-file-or-buffer . nil)
     (completion-ignore-case . t)
