@@ -79,17 +79,13 @@
   :config
   (winner-mode 1))
 
-(leaf prog-mode
-  :require t)
-
 (leaf flycheck
   :after prog-mode
   :ensure t
-  :config
-  (global-flycheck-mode t)
+  :require t
+  :config (global-flycheck-mode t)
   :disabled nil
-  :setq `((flycheck-emacs-lisp-load-path . 'inherit))
-  :hook (prog-mode-hook . flycheck-mode))
+  :setq `((flycheck-emacs-lisp-load-path . 'inherit)))
 
 (leaf company
   :after prog-mode
@@ -184,6 +180,14 @@
 (leaf eltags
   :setq
   `((tags-revert-without-query . t)))
+
+(leaf lsp-ui
+  :ensure t
+  :after lsp-mode flycheck
+  :require t
+  :config
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
 (leaf haskell-mode
   :ensure t
