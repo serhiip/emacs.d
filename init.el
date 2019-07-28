@@ -181,6 +181,12 @@
   :setq
   `((tags-revert-without-query . t)))
 
+(leaf markdown-mode
+  :ensure t
+  :require t
+  ;; fixes an issue with sideline https://github.com/emacs-lsp/lsp-ui/issues/285#issuecomment-493092398
+  :custom-face (markdown-code-face . '((t (:inherit consolas)))))
+
 (leaf lsp-ui
   :ensure t
   :after lsp-mode flycheck
