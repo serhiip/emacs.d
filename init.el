@@ -246,6 +246,13 @@
   :config
   (eval-after-load 'company-box (add-hook 'company-mode-hook 'company-box-mode)))
 
+(leaf yasnippet
+  :ensure t
+  :require t
+  :after company-box
+  :config
+  (yas-global-mode))
+
 (leaf python-mode
   :require t
   :ensure t
@@ -259,6 +266,7 @@
   (with-eval-after-load 'flycheck
     (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
 
+(leaf nix-mode :ensure t)
 
 (org-todo-list)
 
