@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: Haskell module haddock block
+# key: {-|}
+# --
+{-|
+Module      : ${1:Module.Name}
+Description : ${2:Short description}
+License     : GPL-3
+Maintainer  : Serhii <serhii@proximala.bz>
+Stability   : experimental
+
+${3:Here is a longer description of this module, containing some commentary with @some markup@.}
+-}
+module $1 where $0
