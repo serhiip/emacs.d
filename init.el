@@ -202,10 +202,14 @@
   (defun fmt-haskell-file ()
     "Format current file using brittany."
     (interactive)
+    (haskell-sort-imports)
     (async-shell-command
      (format
       "brittany --write-mode=inplace %s"
-      (buffer-file-name (current-buffer))))))
+      (buffer-file-name (current-buffer))))
+    (revert-buffer :noconfirm t))
+  (("C-c f" . fmt-haskell-file)))
+
 
 (leaf lsp-haskell
   :ensure t
