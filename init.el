@@ -14,6 +14,7 @@
 
 (require 'files)
 (require 'leaf)
+(require 'pretty-symbols)
 
 (set-frame-font "PragmataPro Mono Liga")
 (set-face-attribute 'default nil :height 130)
@@ -271,6 +272,34 @@
     (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
 
 (leaf nix-mode :ensure t)
+
+(leaf prog-mode
+  :init
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
+
+  (defun add-pragmatapro-prettify-symbols-alist ()
+    (setq prettify-symbols-alist pragmatapro-prettify-symbols-alist))
+
+  ;; enable prettified symbols on comments
+  (defun setup-compose-predicate ()
+    (setq prettify-symbols-compose-predicate
+          (defun my-prettify-symbols-default-compose-p (start end _match)
+            "Same as `prettify-symbols-default-compose-p', except compose symbols in comments as well."
+            (let* ((syntaxes-beg (if (memq (char-syntax (char-after start)) '(?w ?_))
+                                     '(?w ?_) '(?. ?\\)))
+                   (syntaxes-end (if (memq (char-syntax (char-before end)) '(?w ?_))
+                                     '(?w ?_) '(?. ?\\))))
+              (not (or (memq (char-syntax (or (char-before start) ?\s)) syntaxes-beg)
+                       (memq (char-syntax (or (char-after end) ?\s)) syntaxes-end)
+                       (nth 3 (syntax-ppss))))))))
+
+  ;; main hook fn, just add to text-mode/prog-mode
+  (defun prettify-hook ()
+    (add-pragmatapro-prettify-symbols-alist)
+    (setup-compose-predicate))
+
+  (add-hook 'prog-mode-hook 'prettify-hook)
+  (global-prettify-symbols-mode +1))
 
 (org-todo-list)
 
