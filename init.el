@@ -18,6 +18,11 @@
 
 (set-frame-font "PragmataPro Mono Liga")
 (set-face-attribute 'default nil :height 130)
+(setq default-frame-alist '((font . "PragmataPro Mono Liga-16")))
+(setq mac-option-key-is-meta nil)
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier nil)
 
 (prog1 "Load leaf.el"
   (leaf leaf
@@ -32,9 +37,13 @@
 
 (require 'functions)
 
+(leaf exec-path-from-shell :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 (leaf custom
   :config
-  (add-to-list 'exec-path "/usr/local/bin")
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (transient-mark-mode 1)
@@ -43,7 +52,6 @@
   (electric-pair-mode 1)
   (column-number-mode 1)
   (fset 'yes-or-no-p 'y-or-n-p)
-  ;; (set-frame-parameter nil 'fullscreen 'fullboth)
   (global-hl-line-mode 1)
   (load custom-file)
   :setq
@@ -58,9 +66,10 @@
     (kept-new-versions . 6)
     (kept-old-versions . 2)
     (version-control . t)
-    (custom-file . (concat user-emacs-directory "custom.el")))
-  :custom
-  ;; (custom-enabled-themes . '(tsdh-dark))
+    (custom-file . (concat user-emacs-directory "custom.el"))
+    (debug-on-error . t)
+    ;;(erc-autojoin-channels-alist . '(("freenode.net" "#haskell" "#haskell-ide-engine")))
+    (exec-path-from-shell-variables . '("PATH" "MANPATH" "NIX_PATH" "NIX_SSL_CERT_FILE")))
   :bind (("<up>" . nil) ("<right>" . nil) ("<left>" . nil) ("<down>" . nil)))
 
 (leaf whitespace
@@ -85,7 +94,7 @@
   :ensure t
   :require t
   :config (global-flycheck-mode t)
-  :disabled nil
+  :disabled t
   :setq `((flycheck-emacs-lisp-load-path . 'inherit)))
 
 (leaf company
@@ -144,9 +153,7 @@
   :hook (emacs-lisp-mode-hook . rainbow-delimiters-mode))
 
 (leaf smartparens
-  :ensure t
-  :after elisp-mode
-  :hook (emacs-lisp-mode-hook . smartparens-strict-mode))
+  :after elisp-mode)
 
 (leaf magit
   :ensure t
@@ -172,11 +179,15 @@
 
 (leaf lsp-mode
   :ensure t
-  :after prog-mode
+  :after prog-mode scala-mode
   :require t
   :setq `((lsp-enable-snippet . nil))
+  :bind (("C-c C-a" . lsp-execute-code-action)
+         ("C-c f"   . lsp-format-buffer)
+         ("C-c e"   . lsp-ui-flycheck-list))
   :custom
-  (lsp-prefer-flymake . nil))
+  (lsp-prefer-flymake . nil)
+  :hook (scala-mode-hook . lsp))
 
 (leaf eltags
   :setq
@@ -200,27 +211,38 @@
   :ensure t
   :require t
   :init
-  (defun fmt-haskell-file ()
-    "Format current file using brittany."
+  (defun runhaskell ()
+    "Run current file via runhaskell command."
     (interactive)
-    (haskell-sort-imports)
     (async-shell-command
+     (format
+      "runhaskell %s"
+      (buffer-file-name (current-buffer)))))
+  (defun brittany-fmt ()
+    (interactive)
+    "Format haskell file using brittany."
+    (shell-command
      (format
       "brittany --write-mode=inplace %s"
       (buffer-file-name (current-buffer))))
-    (revert-buffer :noconfirm t))
-  (("C-c f" . fmt-haskell-file)))
-
+    (revert-buffer :ignore-auto :noconfirm))
+  :bind
+  (("C-c C-x" . runhaskell))
+  (("C-c C-f" . brittany-fmt))
+  (("C-c C-a" . lsp-execute-code-action)))
 
 (leaf lsp-haskell
   :ensure t
-  :after lsp-mode haskell-mode
+;;  :after lsp-mode haskell-mode lsp-ui lsp
   :require t
   :config
-  (eval-after-load 'lsp (add-hook 'haskell-mode-hook 'lsp))
+  (eval-after-load 'lsp-ui-mode (add-hook 'haskell-mode-hook 'lsp-ui-mode))
+  (eval-after-load 'lsp-mode (add-hook 'haskell-mode-hook 'lsp))
   :setq
-  `((lsp-haskell-process-path-hie . "hie-wrapper")
-    (haskell-tags-on-save . nil)))
+  `((lsp-haskell-process-path-hie . "ghcide")
+    (lsp-haskell-process-args-hie . nil)
+    (haskell-tags-on-save . nil)
+    (lsp-log-io . nil)))
 
 (leaf company
   :ensure t
@@ -258,20 +280,15 @@
   :config
   (yas-global-mode))
 
-(leaf python-mode
-  :require t
-  :ensure t
+(leaf lsp-python-ms
+  :init
+  (setq lsp-python-ms-auto-install-server t)
+  :reqire t
   :hook (python-mode-hook . lsp))
 
-(leaf flycheck-pycheckers
-  :ensure t
-  :require t
-  :after python-mode flycheck
-  :config
-  (with-eval-after-load 'flycheck
-    (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
-
 (leaf nix-mode :ensure t)
+
+(leaf terraform-mode :ensure t)
 
 (leaf prog-mode
   :init
@@ -300,6 +317,80 @@
 
   (add-hook 'prog-mode-hook 'prettify-hook)
   (global-prettify-symbols-mode +1))
+
+(leaf yaml-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
+
+(leaf erc
+  :init
+  (defun erc-join ()
+    (interactive)
+    (let ((pwd (read-passwd "freenode passwd ")))
+      (and pwd (erc :server "irc.freenode.net" :port 6667 :nick "abracadabrahocus" :password pwd)))))
+
+(leaf scala-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.s\\(cala\\|bt\\)$" . scala-mode)))
+
+(leaf lsp-metals :ensure t :after scala-mode)
+
+(leaf js2-mode
+  :ensure t
+  :reqire t
+  :after tide
+  :init
+  (add-hook 'js-mode-hook 'js2-minor-mode)
+  ;; (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+  ;; (flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+  )
+
+(leaf tide
+  :ensure t
+  :require t
+  :init
+
+  (defun setup-tide-mode ()
+    (interactive)
+    (tide-setup)
+    (flycheck-mode +1)
+    (setq flycheck-check-syntax-automatically '(save mode-enabled))
+    (eldoc-mode +1)
+    (tide-hl-identifier-mode +1)
+    (company-mode +1))
+  ;; aligns annotation to the right hand side
+  (setq company-tooltip-align-annotations t)
+
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 2)
+  (setq standard-indent 2)
+  (setq js-indent-level 2)
+
+  ;; formats the buffer before saving
+  (add-hook 'before-save-hook 'tide-format-before-save)
+  (add-hook 'js-mode-hook #'setup-tide-mode)
+  (add-hook 'js2-mode-hook #'setup-tide-mode)
+  (add-hook 'typescript-mode-hook #'setup-tide-mode))
+
+(leaf web-mode
+  :after js2-mode
+  :ensure t
+  :init
+  (add-hook 'web-mode-hook
+            (lambda ()
+              (when (or
+                     (string-equal "tsx" (file-name-extension buffer-file-name))
+                     (string-equal "jsx" (file-name-extension buffer-file-name)))
+                (setup-tide-mode))))
+
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+  (flycheck-add-mode 'typescript-tslint 'web-mode)
+  :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode)))
 
 (org-todo-list)
 
