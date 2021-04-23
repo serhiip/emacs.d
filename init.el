@@ -392,6 +392,13 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode)))
 
+(setq package-native-compile t)
+
+(while (or comp-files-queue
+           (> (comp-async-runnings) 0))
+  (print "still compiling")
+  (sleep-for 1))
+
 (org-todo-list)
 
 ;;; init.el ends here
