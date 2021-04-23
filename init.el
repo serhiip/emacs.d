@@ -66,7 +66,7 @@
     (kept-new-versions . 6)
     (kept-old-versions . 2)
     (version-control . t)
-    (custom-file . (concat user-emacs-directory "custom.el"))
+    ;; (custom-file . (concat user-emacs-directory "custom.el"))
     (debug-on-error . t)
     ;;(erc-autojoin-channels-alist . '(("freenode.net" "#haskell" "#haskell-ide-engine")))
     (exec-path-from-shell-variables . '("PATH" "MANPATH" "NIX_PATH" "NIX_SSL_CERT_FILE")))
@@ -253,11 +253,11 @@
   `((company-idle-delay . 0.2)
     (company-minimum-prefix-length . 2)))
 
-(leaf company-lsp
-  :ensure t
-  :after lsp-mode company
-  :config
-  (push 'company-lsp company-backends))
+;; (leaf company-lsp
+;;   :ensure t
+;;   :after lsp-mode company
+;;   :config
+;;   (push 'company-lsp company-backends))
 
 (leaf all-the-icons
   ;; M-x all-the-icons-install-fonts
