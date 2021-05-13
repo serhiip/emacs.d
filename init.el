@@ -392,8 +392,36 @@
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode)))
 
-(setq package-native-compile nil)
+;;; ocaml mode
+;;; https://github.com/ocaml/ocaml-lsp#installation
+(leaf tuareg
+  :ensure t
+  :after lsp-mode
+  :init
+  (add-hook 'tuareg-mode-hook (lambda () (lsp))))
 
 (org-todo-list)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-box-icons-alist 'company-box-icons-all-the-icons)
+ '(helm-display-source-at-screen-top nil)
+ '(lsp-ocaml-lang-server-command '("ocamllsp"))
+ '(lsp-prefer-flymake nil t)
+ '(package-archives
+   '(("org" . "https://orgmode.org/elpa/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("gnu" . "https://elpa.gnu.org/packages/")))
+ '(package-selected-packages
+   '(tuareg yasnippet yaml-mode web-mode tide terraform-mode scala-mode rainbow-delimiters projectile ob-deno nix-mode monokai-theme magit lsp-ui lsp-metals lsp-haskell js2-mode helm exec-path-from-shell company-box all-the-icons)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(helm-source-header ((t (:background "#22083397778B" :foreground "white" :weight bold :height 0.8))))
+ '(markdown-code-face ((t (:inherit consolas)))))
