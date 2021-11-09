@@ -53,7 +53,7 @@
   (column-number-mode 1)
   (fset 'yes-or-no-p 'y-or-n-p)
   (global-hl-line-mode 1)
-  (load custom-file)
+  ;; (load custom-file)
   :setq
   `((confirm-nonexistent-file-or-buffer . nil)
     (completion-ignore-case . t)
@@ -69,7 +69,10 @@
     ;; (custom-file . (concat user-emacs-directory "custom.el"))
     (debug-on-error . t)
     ;;(erc-autojoin-channels-alist . '(("freenode.net" "#haskell" "#haskell-ide-engine")))
-    (exec-path-from-shell-variables . '("PATH" "MANPATH" "NIX_PATH" "NIX_SSL_CERT_FILE")))
+    (exec-path-from-shell-variables . '("PATH" "MANPATH" "NIX_PATH" "NIX_SSL_CERT_FILE"))
+    (lsp-keymap-prefix . "C-c l")
+    (lsp-haskell-formatting-provider . "brittany")
+    (lsp-haskell-brittany-on . t))
   :bind (("<up>" . nil) ("<right>" . nil) ("<left>" . nil) ("<down>" . nil)))
 
 (leaf whitespace
@@ -179,15 +182,15 @@
 
 (leaf lsp-mode
   :ensure t
-  :after prog-mode scala-mode
   :require t
-  :setq `((lsp-enable-snippet . nil))
-  :bind (("C-c C-a" . lsp-execute-code-action)
-         ("C-c f"   . lsp-format-buffer)
-         ("C-c e"   . lsp-ui-flycheck-list))
+  :setq `((lsp-enable-snippet . nil)
+          (lsp-keymap-prefix . "C-c l"))
+  :bind (("C-c l a"   . lsp-execute-code-action)
+         ("C-c l e"   . lsp-treemacs-errors-list))
   :custom
   (lsp-prefer-flymake . nil)
-  :hook (scala-mode-hook . lsp))
+  (lsp-keymap-prefix . "C-c l")
+  :hook (haskell-mode-hook . lsp))
 
 (leaf eltags
   :setq
@@ -211,38 +214,27 @@
   :ensure t
   :require t
   :init
+  :after lsp
+  :hook lsp
   (defun runhaskell ()
     "Run current file via runhaskell command."
     (interactive)
     (async-shell-command
      (format
       "runhaskell %s"
-      (buffer-file-name (current-buffer)))))
-  (defun brittany-fmt ()
-    (interactive)
-    "Format haskell file using brittany."
-    (shell-command
-     (format
-      "brittany --write-mode=inplace %s"
-      (buffer-file-name (current-buffer))))
-    (revert-buffer :ignore-auto :noconfirm))
-  :bind
-  (("C-c C-x" . runhaskell))
-  (("C-c C-f" . brittany-fmt))
-  (("C-c C-a" . lsp-execute-code-action)))
+      (buffer-file-name (current-buffer))))))
 
 (leaf lsp-haskell
   :ensure t
-;;  :after lsp-mode haskell-mode lsp-ui lsp
+  :after haskell-mode lsp
   :require t
   :config
   (eval-after-load 'lsp-ui-mode (add-hook 'haskell-mode-hook 'lsp-ui-mode))
   (eval-after-load 'lsp-mode (add-hook 'haskell-mode-hook 'lsp))
   :setq
-  `((lsp-haskell-process-path-hie . "ghcide")
-    (lsp-haskell-process-args-hie . nil)
-    (haskell-tags-on-save . nil)
-    (lsp-log-io . nil)))
+  `((haskell-tags-on-save . nil)
+    (lsp-log-io . nil)
+    ))
 
 (leaf company
   :ensure t
@@ -280,11 +272,11 @@
   :config
   (yas-global-mode))
 
-(leaf lsp-python-ms
-  :init
-  (setq lsp-python-ms-auto-install-server t)
-  :reqire t
-  :hook (python-mode-hook . lsp))
+;; (leaf lsp-python-ms
+;;   :init
+;;   (setq lsp-python-ms-auto-install-server t)
+;;   :reqire t
+;;   :hook (python-mode-hook . lsp))
 
 (leaf nix-mode :ensure t)
 
@@ -408,7 +400,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-box-icons-alist 'company-box-icons-all-the-icons)
+ '(company-box-icons-alist 'company-box-icons-all-the-icons t)
  '(helm-display-source-at-screen-top nil)
  '(lsp-ocaml-lang-server-command '("ocamllsp"))
  '(lsp-prefer-flymake nil t)
