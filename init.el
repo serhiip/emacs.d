@@ -17,7 +17,7 @@
 (require 'pretty-symbols)
 
 (set-frame-font "PragmataPro Mono Liga")
-(set-face-attribute 'default nil :height 130)
+(set-face-attribute 'default nil :height 190)
 (setq default-frame-alist '((font . "PragmataPro Mono Liga-16")))
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
@@ -104,7 +104,7 @@
 
 (leaf org
   :ensure t
-  :require t
+  :require org org-id
   :setq
   `((serhiip-org-file-path . "~/org")
     (org-default-notes-file . '(serhiip-org-file-path "/gtd.org"))
@@ -140,6 +140,9 @@
 				("TOREAD"  . "dark cyan")
 				("TOBUY"   . "wheat")))
     (org-ellipsis . " ⤵"))
+  :config
+  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+
   :bind (("C-c a" . org-agenda)
 	 ("C->"   . serhiip-take-notes-from-region)
          ("C-c c" . serhiip-take-note-todo)))
@@ -152,8 +155,15 @@
   :after elisp-mode
   :hook (emacs-lisp-mode-hook . rainbow-delimiters-mode))
 
+;;; https://ebzzry.io/en/emacs-pairs/
+;;; https://github.com/conao3/leaf.el#bind-bind-keywords
 (leaf smartparens
-  :after elisp-mode)
+  :ensure t
+  :after elisp-mode
+  :hook (emacs-lisp-mode-hook . smartparens-strict-mode)
+  :bind (:smartparens-mode-map
+         ("C-c f" . sp-forward-slurp-sexp)
+         ("C-c b" . sp-backward-slurp-sexp)))
 
 (leaf magit
   :ensure t
@@ -218,31 +228,29 @@
      (format
       "runhaskell %s"
       (buffer-file-name (current-buffer)))))
-  (defun brittany-fmt ()
-    (interactive)
-    "Format haskell file using brittany."
-    (shell-command
-     (format
-      "brittany --write-mode=inplace %s"
-      (buffer-file-name (current-buffer))))
-    (revert-buffer :ignore-auto :noconfirm))
   :bind
-  (("C-c C-x" . runhaskell))
-  (("C-c C-f" . brittany-fmt))
-  (("C-c C-a" . lsp-execute-code-action)))
+  (("C-c C-x" . runhaskell)))
+
+;; ghc -O2 -prof -fprof-cafs -fprof-auto sorting.hs
+;; ./sorting +RTS -p
+;; cat sorting.prof
+
+;; ./sorting +RTS -p -hy
+;; hp2ps -c sorting.hp
+;; ps2pdf sorting.ps
 
 (leaf lsp-haskell
   :ensure t
-;;  :after lsp-mode haskell-mode lsp-ui lsp
-  :require t
+  :after lsp-mode haskell-mode
+  :require t lsp
   :config
   (eval-after-load 'lsp-ui-mode (add-hook 'haskell-mode-hook 'lsp-ui-mode))
   (eval-after-load 'lsp-mode (add-hook 'haskell-mode-hook 'lsp))
   :setq
-  `((lsp-haskell-process-path-hie . "ghcide")
-    (lsp-haskell-process-args-hie . nil)
-    (haskell-tags-on-save . nil)
-    (lsp-log-io . nil)))
+  `((lsp-haskell-process-path-hie . "hie-wrapper")
+    (haskell-tags-on-save . nil))
+  :config
+  (add-hook 'haskell-mode-hook #'(lambda nil (setq-local tab-width 2))))
 
 (leaf company
   :ensure t
