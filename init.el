@@ -394,6 +394,10 @@
 
 (org-todo-list)
 
+(leaf dockerfile-mode
+  :ensure t
+  :require t)
+
 ;;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
