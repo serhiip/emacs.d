@@ -17,12 +17,16 @@
 (require 'pretty-symbols)
 
 (set-frame-font "PragmataPro Mono Liga")
-(set-face-attribute 'default nil :height 130)
-(setq default-frame-alist '((font . "PragmataPro Mono Liga-16")))
+(setq default-frame-alist '((font . "PragmataPro Mono Liga-14")))
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier nil)
+
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 (prog1 "Load leaf.el"
   (leaf leaf
@@ -61,7 +65,6 @@
     (inhibit-startup-screen . t)
     (indent-tabs-mode . nil)
     (backup-by-copying . t)
-    (backup-directory-alist . '(("." . "~/.saves")))
     (delete-old-versions . t)
     (kept-new-versions . 6)
     (kept-old-versions . 2)
@@ -324,8 +327,11 @@
 
 (leaf scala-mode
   :ensure t
+  :after lsp-mode lsp-ui
   :config
-  (add-to-list 'auto-mode-alist '("\\.s\\(cala\\|bt\\)$" . scala-mode)))
+  (add-to-list 'auto-mode-alist '("\\.s\\(cala\\|bt\\)$" . scala-mode))
+  (eval-after-load 'lsp-ui-mode (add-hook 'scala-mode-hook 'lsp-ui-mode))
+  (eval-after-load 'lsp-mode (add-hook 'scala-mode-hook 'lsp)))
 
 (leaf lsp-metals :ensure t :after scala-mode)
 
@@ -392,11 +398,15 @@
   :init
   (add-hook 'tuareg-mode-hook (lambda () (lsp))))
 
-(org-todo-list)
-
 (leaf dockerfile-mode
   :ensure t
   :require t)
+
+(leaf lsp-pyre
+  :ensure t
+  :require t)
+
+(org-todo-list)
 
 ;;; init.el ends here
 (custom-set-variables
@@ -404,8 +414,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-box-icons-alist 'company-box-icons-all-the-icons t)
+ '(company-box-icons-alist 'company-box-icons-all-the-icons)
  '(helm-display-source-at-screen-top nil)
+ '(lsp-keymap-prefix "C-c l")
  '(lsp-ocaml-lang-server-command '("ocamllsp"))
  '(lsp-prefer-flymake nil t)
  '(package-archives
