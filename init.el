@@ -6,18 +6,16 @@
 
 ;;; Code:
 
-(let ((default-directory (concat
-                          user-emacs-directory
-                          (convert-standard-filename "init"))))
-    (normal-top-level-add-subdirs-to-load-path)
-    (add-to-list 'load-path default-directory))
+
+(let* ((my-lisp-dir "~/.emacs.d/init/")
+       (default-directory my-lisp-dir)
+       (orig-load-path load-path))
+  (setq load-path (cons my-lisp-dir nil))
+  (normal-top-level-add-subdirs-to-load-path)
+  (nconc load-path orig-load-path))
 
 (require 'files)
-(require 'leaf)
-(require 'pretty-symbols)
 
-(set-frame-font "PragmataPro Mono Liga")
-(setq default-frame-alist '((font . "PragmataPro Mono Liga-14")))
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
 (setq mac-command-modifier 'meta)
@@ -27,6 +25,8 @@
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+
+(require 'leaf)
 
 (prog1 "Load leaf.el"
   (leaf leaf
@@ -40,6 +40,7 @@
       (package-initialize))))
 
 (require 'functions)
+(require 'pragmatapro-lig)
 
 (leaf exec-path-from-shell :ensure t
   :config
@@ -76,12 +77,22 @@
     (lsp-keymap-prefix . "C-c l")
     (lsp-haskell-formatting-provider . "brittany")
     (lsp-haskell-brittany-on . t))
-  :bind (("<up>" . nil) ("<right>" . nil) ("<left>" . nil) ("<down>" . nil)))
+  :bind (
+         ("<up>" . nil)
+         ("<right>" . nil)
+         ("<left>" . nil)
+         ("<down>" . nil)
+         ("<f9>" . treemacs)
+         ("<f8>" . pragmatapro-lig-mode))
+  )
+
+(leaf dash
+  :ensure t)
 
 (leaf whitespace
   :require t
   :setq
-  `((whitespace-line-column . 120))
+  `((whitespace-line-column . 140))
   :bind (("C-x w" . whitespace-mode)))
 
 (leaf monokai-theme
@@ -108,12 +119,16 @@
   :ensure t
   :hook (prog-mode-hook . company-mode))
 
+(leaf projectile
+  :ensure t
+  :require t)
+
 (leaf org
   :ensure t
   :require t
   :setq
-  `((serhiip-org-file-path . "~/org")
-    (org-default-notes-file . '(serhiip-org-file-path "/gtd.org"))
+  ((org-directory . "~/workspace/org")
+    (org-default-notes-file . (serhiip-org-file-path "/gtd.org"))
     (org-todo-keywords . '((sequence "TODO" "WAIT"     "|" "DONE")
                            (sequence "TOBUY"           "|" "DONE")
                            (sequence "TOREAD"          "|" "DONE")
@@ -182,6 +197,10 @@
   (helm-display-source-at-screen-top . nil)
   :custom-face
   (helm-source-header . '((t (:background "#22083397778B" :foreground "white" :weight bold :height 0.8)))))
+
+(leaf lsp-treemacs
+  :ensure t
+  :require t)
 
 (leaf lsp-mode
   :ensure t
@@ -307,11 +326,15 @@
 
   ;; main hook fn, just add to text-mode/prog-mode
   (defun prettify-hook ()
-    (add-pragmatapro-prettify-symbols-alist)
+    ;;(add-pragmatapro-prettify-symbols-alist)
     (setup-compose-predicate))
 
-  (add-hook 'prog-mode-hook 'prettify-hook)
-  (global-prettify-symbols-mode +1))
+  ;; (add-hook 'prog-mode-hook 'setup-compose-predicate)
+  ;; (add-hook 'text-mode-hook 'setup-compose-predicate)
+  (add-hook 'text-mode-hook 'pragmatapro-lig-mode)
+  (add-hook 'prog-mode-hook 'pragmatapro-lig-mode)
+  ;;(global-prettify-symbols-mode +1)
+  )
 
 (leaf yaml-mode
   :ensure t
@@ -403,8 +426,18 @@
   :require t)
 
 (leaf lsp-pyre
+(leaf tmr
   :ensure t
   :require t)
+
+(leaf denote
+  :ensure t
+  :require t
+  :init
+  (setq denote-infer-keywords t)
+  (setq denote-directory (expand-file-name "~/Documents/notes/"))
+  (setq denote-known-keywords '("sql" "meeting" "todo" "daily"))
+  (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories))
 
 (org-todo-list)
 
