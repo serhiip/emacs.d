@@ -13,16 +13,7 @@
 (require 'org-capture)
 (require 'leaf)
 
-(leaf projectile :ensure t)
-
 (defvar serhiip--org-current-file nil)
-
-(defun serhiip-rsync (src dest)
-  "Copy files from SRC to DEST via rsync command."
-  (shell-command (format
-                  "rsync -avz --chmod=ugo=rwX %s %s"
-                  (shell-quote-argument src)
-                  (shell-quote-argument dest))))
 
 (defun serhiip-take-notes-from-region (start end)
   "Capture notes from region selected.
@@ -33,7 +24,7 @@ details"
   (interactive "r")
   (let ((buff (current-buffer)))
     (when
-        (unless (eq start end)
+        (unless (= start end)
           (serhiip--take-note-impl (buffer-substring start end))
           (with-current-buffer buff (kill-region start end))
           nil)
@@ -86,7 +77,8 @@ This functions should be added to the hooks of major modes for programming."
 
 (defun serhiip-set-org-file-capture (file lines)
   "Set current org FILE name and capture LINES provided."
-  (let ((serhiip--org-current-file file)) (org-capture-string lines)))
+  (let ((serhiip--org-current-file file))
+    (org-capture-string lines)))
 
 (defun serhiip-add-elisp-docs ()
   "Add docs for current elisp buffer."
