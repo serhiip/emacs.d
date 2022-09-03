@@ -425,7 +425,6 @@
   :ensure t
   :require t)
 
-(leaf lsp-pyre
 (leaf tmr
   :ensure t
   :require t)
@@ -438,6 +437,9 @@
   (setq denote-directory (expand-file-name "~/Documents/notes/"))
   (setq denote-known-keywords '("sql" "meeting" "todo" "daily"))
   (add-hook 'dired-mode-hook #'denote-dired-mode-in-directories))
+
+(leaf protobuf-mode
+  :ensure t)
 
 (org-todo-list)
 
