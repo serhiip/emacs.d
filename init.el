@@ -446,6 +446,14 @@
 (leaf impatient-mode
   :ensure t)
 
+(leaf ox-reveal
+  :ensure t
+  :init
+  (setq org-reveal-root "file:///Users/serhii/workspace/reveal.js"))
+
+(leaf htmlize
+  :ensure t)
+
 ;; impatient mode
 ;; https://stackoverflow.com/a/36189456
 (defun markdown-html (buffer)
