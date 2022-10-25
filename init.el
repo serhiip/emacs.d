@@ -331,9 +331,11 @@
 
   ;; (add-hook 'prog-mode-hook 'setup-compose-predicate)
   ;; (add-hook 'text-mode-hook 'setup-compose-predicate)
-  (add-hook 'text-mode-hook 'pragmatapro-lig-mode)
-  (add-hook 'prog-mode-hook 'pragmatapro-lig-mode)
-  ;;(global-prettify-symbols-mode +1)
+  
+  ;; (add-hook 'text-mode-hook 'pragmatapro-lig-mode)
+  ;; (add-hook 'prog-mode-hook 'pragmatapro-lig-mode)
+
+  ;;  (global-prettify-symbols-mode +1)
   )
 
 (leaf yaml-mode
