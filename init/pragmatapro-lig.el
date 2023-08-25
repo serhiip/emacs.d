@@ -359,7 +359,7 @@
 
 (define-minor-mode pragmatapro-lig-mode
   "Compose pragmatapro's ligatures."
-  :lighter " PragLig"
+  :lighter " Lig"
   (let ((inhibit-modification-hooks t)
         (inhibit-read-only t))
     (if pragmatapro-lig-mode
