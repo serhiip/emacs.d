@@ -23,13 +23,9 @@
 (set-frame-font "-*-PragmataPro Mono-normal-normal-normal-*-13-*-*-*-p-0-iso10646-1")
 (setq default-frame-alist '((font . "-*-PragmataPro Mono-normal-normal-normal-*-13-*-*-*-p-0-iso10646-1") (width . 300) (height . 300)))
 
-(setenv "PATH" (concat (getenv "PATH") ":/Users/serhii/.local/bin:/Users/serhii/.nix-profile/bin"))
 (setenv "JAVA_HOME" "/nix/store/5f79idj0y7i9qcsp3w1w3ir7nk8280nr-zulu17.34.19-ca-jdk-17.0.3/zulu-17.jdk/Contents/Home")
-(setq exec-path (append exec-path '("/Users/serhii/.local/bin")))
-(setq exec-path (append exec-path '("/Users/serhii/.nix-profile/bin")))
-(setq exec-path (append exec-path '("/Users/serhii/.cargo/bin/")))
-(setq exec-path (append exec-path '("/Users/serhii/node_modules/.bin")))
-(setq treesit-extra-load-path (append treesit-extra-load-path '("/Users/.emacs.d/tree-sitter")))
+(setq exec-path (append exec-path (mapcar (lambda (in) (file-name-concat (getenv "HOME") in)) '(".local/bin" ".nix-profile/bin" ".cargo/bin/" "node_modules/.bin"))))
+;;(setq treesit-extra-load-path (append treesit-extra-load-path '("/Users/.emacs.d/tree-sitter")))
 
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 ;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -105,12 +101,24 @@
   :bind
   (("<f8>" . pragmatapro-lig-mode)))
 
+(use-package company
+  :hook ((after-init-hook . global-company-mode)))
+
 (use-package scala-mode
   :interpreter ("scala" . scala-mode)
   :config
   (advice-add #'scala-mode-map:add-self-insert-hooks :around #'with-disable-for-scala3)
   :hook
-  (scala-mode . disable-scala-indent))
+  (scala-mode . disable-scala-indent)
+  (scala-mode . eglot-ensure)
+  (scala-mode . company-mode))
+
+;; https://github.com/KaranAhlawat/scala-ts-mode
+;; (use-package scala-ts-mode
+;;   :mode "\\.scala\\'"
+;;   :hook
+;;   (scala-ts-mode . disable-scala-indent)
+;;   (scala-ts-mode . eglot-ensure))
 
 (use-package sbt-mode
   :commands sbt-start sbt-command
@@ -130,16 +138,10 @@
   (add-to-list 'eglot-server-programs
 	       '(scala-mode . ("metals-emacs")))
   (setq eglot-confirm-server-initiated-edits nil)
-  :hook
-  (scala-mode . eglot-ensure)
   :bind
   (
    (:map eglot-mode-map ("C-c l a" . eglot-code-actions))
    (:map eglot-mode-map ("C-c l =" . eglot-format-buffer))))
-
-(use-package company
-  :hook ((after-init-hook . global-company-mode)
-	 (scala-mode . company-mode)))
 
 (use-package all-the-icons
   ;; M-x all-the-icons-install-fonts
@@ -215,13 +217,20 @@
   :config
   (setq rust-format-on-save t)
   :hook
-  (rust-mode . eglot-ensure))
+  (rust-mode . eglot-ensure)
+  (rust-mode . company-mode))
+
+;; tree-sitter
+;; (use-package rust-ts-mode
+;;   :mode "\\.rs\\'"
+;;   (rust-ts-mode . eglot-ensure))
 
 ;; npm i -g typescript-language-server; npm i -g typescript
 (use-package typescript-ts-mode
   :mode "\\.ts\\'"
   :hook
-  (typescript-ts-mode . eglot-ensure))
+  (typescript-ts-mode . eglot-ensure)
+  (typescript-ts-mode . company-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
