@@ -19,6 +19,7 @@
 (column-number-mode 1)
 (fset 'yes-or-no-p 'y-or-n-p)
 (global-hl-line-mode 1)
+(scroll-bar-mode -1)
 (setq visible-bell t)
 (set-frame-font "-*-PragmataPro Mono-normal-normal-normal-*-13-*-*-*-p-0-iso10646-1")
 (setq default-frame-alist '((font . "-*-PragmataPro Mono-normal-normal-normal-*-13-*-*-*-p-0-iso10646-1") (width . 300) (height . 300)))
