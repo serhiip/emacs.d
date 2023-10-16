@@ -24,7 +24,20 @@
 (set-frame-font "-*-PragmataPro Mono-normal-normal-normal-*-13-*-*-*-p-0-iso10646-1")
 (setq default-frame-alist '((font . "-*-PragmataPro Mono-normal-normal-normal-*-13-*-*-*-p-0-iso10646-1") (width . 300) (height . 300)))
 
-(setenv "JAVA_HOME" "/nix/store/5f79idj0y7i9qcsp3w1w3ir7nk8280nr-zulu17.34.19-ca-jdk-17.0.3/zulu-17.jdk/Contents/Home")
+(setq my-backups-dir "~/.emacs_backups/")
+(setq my-autosave-dir "~/.emacs_autosave/")
+(unless (file-exists-p my-backups-dir)
+  (make-directory my-backups-dir t))
+(unless (file-exists-p my-autosave-dir)
+  (make-directory my-autosave-dir t))
+(setq auto-save-file-name-transforms `((".*" ,my-autosave-dir t)))
+(setq backup-directory-alist `(("." . ,my-backups-dir)))
+(setq require-final-newline t)
+(setq frame-inhibit-implied-resize t)
+(setq pixel-scroll-precision-mode t)
+(setq show-trailing-whitespace t)
+(setq kill-whole-line t)
+
 (setq exec-path (append exec-path (mapcar (lambda (in) (file-name-concat (getenv "HOME") in)) '(".local/bin" ".nix-profile/bin" ".cargo/bin/" "node_modules/.bin"))))
 ;;(setq treesit-extra-load-path (append treesit-extra-load-path '("/Users/.emacs.d/tree-sitter")))
 
@@ -77,23 +90,23 @@
 
   (defun add-pragmatapro-prettify-symbols-alist ()
     (setq prettify-symbols-alist pragmatapro-prettify-symbols-alist))
-  
+
   (defun setup-compose-predicate ()
     (setq prettify-symbols-compose-predicate
-          (defun my-prettify-symbols-default-compose-p (start end _match)
-            "Same as `prettify-symbols-default-compose-p', except compose symbols in comments as well."
-            (let* ((syntaxes-beg (if (memq (char-syntax (char-after start)) '(?w ?_))
-                                     '(?w ?_) '(?. ?\\)))
-                   (syntaxes-end (if (memq (char-syntax (char-before end)) '(?w ?_))
-                                     '(?w ?_) '(?. ?\\))))
-              (not (or (memq (char-syntax (or (char-before start) ?\s)) syntaxes-beg)
-                       (memq (char-syntax (or (char-after end) ?\s)) syntaxes-end)
-                       (nth 3 (syntax-ppss))))))))
-  
+	  (defun my-prettify-symbols-default-compose-p (start end _match)
+	    "Same as `prettify-symbols-default-compose-p', except compose symbols in comments as well."
+	    (let* ((syntaxes-beg (if (memq (char-syntax (char-after start)) '(?w ?_))
+				     '(?w ?_) '(?. ?\\)))
+		   (syntaxes-end (if (memq (char-syntax (char-before end)) '(?w ?_))
+				     '(?w ?_) '(?. ?\\))))
+	      (not (or (memq (char-syntax (or (char-before start) ?\s)) syntaxes-beg)
+		       (memq (char-syntax (or (char-after end) ?\s)) syntaxes-end)
+		       (nth 3 (syntax-ppss))))))))
+
   (defun prettify-hook ()
     (add-pragmatapro-prettify-symbols-alist)
     (setup-compose-predicate))
-  
+
   (global-prettify-symbols-mode +1)
 
   :hook
@@ -103,7 +116,9 @@
   (("<f8>" . pragmatapro-lig-mode)))
 
 (use-package company
-  :hook ((after-init-hook . global-company-mode)))
+  :hook
+  ((after-init-hook . global-company-mode)
+   (prog-mode       . company-mode)))
 
 (use-package scala-mode
   :interpreter ("scala" . scala-mode)
@@ -112,7 +127,8 @@
   :hook
   (scala-mode . disable-scala-indent)
   (scala-mode . eglot-ensure)
-  (scala-mode . company-mode))
+  (scala-mode . company-mode)
+  (scala-mode . display-line-numbers-mode))
 
 ;; https://github.com/KaranAhlawat/scala-ts-mode
 ;; (use-package scala-ts-mode
@@ -182,7 +198,8 @@
 
 (use-package whitespace
   :bind
-  (("C-x w" . whitespace-mode))
+  (("C-x w"   . whitespace-mode)
+   ("C-x C-w" . whitespace-cleanup))
   :config
   (setq whitespace-line-column 140))
 
@@ -199,7 +216,8 @@
   (set-face-background 'highlight-indentation-face "#44475a")
   (set-face-background 'highlight-indentation-current-column-face "#44475a")
   :hook
-  (scala-mode . highlight-indentation-current-column-mode))
+  (scala-mode . highlight-indentation-current-column-mode)
+  (yaml-mode . highlight-indentation-current-column-mode))
 
 (use-package gruvbox-theme
   :config
@@ -232,6 +250,23 @@
   :hook
   (typescript-ts-mode . eglot-ensure)
   (typescript-ts-mode . company-mode))
+
+(use-package markdown-mode
+  :mode "\\.md\\'"
+  :config
+  ;; fixes an issue with sideline https://github.com/emacs-lsp/lsp-ui/issues/285#issuecomment-493092398
+  (custom-set-faces
+   '(markdown-code-face ((t (:inherit consolas))))))
+
+(use-package yaml-mode)
+
+(use-package denote
+  :config
+  (setq denote-infer-keywords t)
+  (setq denote-directory (expand-file-name "~/Documents/notes/"))
+  (setq denote-known-keywords '("sql" "meeting" "todo" "daily"))
+  :hook
+  (dired-mode . denote-dired-mode-in-directories))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
