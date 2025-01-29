@@ -1,3 +1,3 @@
-[submodule "leaf.el"]
-	path = init/leaf
-	url = https://github.com/conao3/leaf.el.git
+[submodule "init/mojo-hl"]
+	path = init/mojo-hl
+	url = git@github.com:andcarnivorous/mojo-hl.git
