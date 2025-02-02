@@ -373,10 +373,6 @@ version < emacs-28."
   (scala-mode . highlight-indentation-current-column-mode)
   (yaml-mode . highlight-indentation-current-column-mode))
 
-(use-package gruvbox-theme
-  :config
-  (load-theme 'gruvbox-dark-hard nil))
-
 (use-package mode-line-bell
   :init
   (mode-line-bell-mode))
@@ -477,7 +473,7 @@ version < emacs-28."
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
-  (load-theme 'doom-one t)
+  (load-theme 'doom-monokai-pro t)
 
   (doom-themes-visual-bell-config)
   (setq doom-themes-treemacs-theme "doom-atom")
@@ -505,16 +501,7 @@ version < emacs-28."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(doom-Iosvkem))
- '(custom-safe-themes
-   '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8"
-     "456697e914823ee45365b843c89fbc79191fdbaff471b29aad9dcbe0ee1d5641"
-     "6f1f6a1a3cff62cc860ad6e787151b9b8599f4471d40ed746ea2819fcd184e1a"
-     "4e2e42e9306813763e2e62f115da71b485458a36e8b4c24e17a2168c45c9cf9d"
-     "4ade6b630ba8cbab10703b27fd05bb43aaf8a3e5ba8c2dc1ea4a2de5f8d45882"
-     "dccf4a8f1aaf5f24d2ab63af1aa75fd9d535c83377f8e26380162e888be0c6a9"
-     "b5fd9c7429d52190235f2383e47d340d7ff769f141cd8f9e7a4629a81abc6b19"
-     default))
+ '(custom-enabled-themes '(doom-monokai-pro))
  '(package-selected-packages
    '(ace-jump-mode all-the-icons apheleia code-cells company company-box
 		   darcula-theme denote eglot ellama gptel
