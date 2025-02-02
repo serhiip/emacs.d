@@ -1,5 +1,5 @@
+(server-start)
 (require 'package)
-
 (setq mac-option-key-is-meta nil)
 (setq mac-command-key-is-meta t)
 (setq mac-command-modifier 'meta)
@@ -38,7 +38,7 @@
 
 (setq exec-path (append exec-path (mapcar (lambda (in) (file-name-concat (getenv "HOME") in)) '(".local/bin" ".nix-profile/bin" ".cargo/bin/" "node_modules/.bin"))))
 
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (package-initialize)
@@ -152,7 +152,6 @@
 (use-package typescript-mode)
 
 (use-package eglot
-  :pin melpa-stable
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
@@ -184,34 +183,145 @@
   (:map flymake-mode-map ("C-c l E" . flymake-show-project-diagnostics))
   (:map flymake-mode-map ("C-c l e" . flymake-show-buffer-diagnostics)))
 
-;;(use-package all-the-icons-ivy
-;;  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 
-;; (use-package ivy
-;;   :config
-;;   (setq ivy-use-virtual-buffers t)
-;;   (setq enable-recursive-minibuffers t)
-;;   (setq search-default-mode #'char-fold-to-regexp)
-;;   (ivy-mode))
+(defun center-frame (frame)
+  (let*
+    ((monitor (frame-monitor-attributes frame))
+      (half-monitor-width (/ (nth 3 (assoc 'workarea monitor)) 2))
+      (half-frame-width (/ (frame-pixel-width frame) 2))
+      (half-monitor-height (/ (nth 4 (assoc 'workarea monitor)) 2))
+      (half-frame-height (/ (frame-pixel-height frame) 2)))
+
+    (set-frame-position frame
+      (- half-monitor-width half-frame-width)
+      (- half-monitor-height half-frame-height))))
+
+(defun helm-display-buffer-in-own-frame-new (buffer &optional resume)
+  "Display Helm buffer BUFFER in a separate frame.
+
+Function suitable for `helm-display-function',
+`helm-completion-in-region-display-function' and/or
+`helm-show-completion-default-display-function'.
+
+See `helm-display-buffer-height' and `helm-display-buffer-width'
+to configure frame size.
+
+Note that this feature is available only with emacs-25+.
+Note also it is not working properly in helm nested session with emacs
+version < emacs-28."
+  (cl-assert (and (fboundp 'window-absolute-pixel-edges)
+		  (fboundp 'frame-geometry))
+	     nil "Helm buffer in own frame is only available starting at emacs-25+")
+  (if (not (display-graphic-p))
+      ;; Fallback to default when frames are not usable.
+      (helm-default-display-buffer buffer)
+    (setq helm--buffer-in-new-frame-p t)
+    (let* ((pos (window-absolute-pixel-position))
+	   (half-screen-size (/ (display-pixel-height x-display-name) 2))
+	   (frame-info (frame-geometry))
+	   (prmt-size (length helm--prompt))
+	   (line-height (frame-char-height))
+	   tab-bar-mode
+	   (new-frame-alist
+	     (if resume
+		 (buffer-local-value 'helm--last-frame-parameters
+				     (get-buffer buffer))
+	       `((width . ,helm-display-buffer-width)
+		 (height . ,helm-display-buffer-height)
+		 (tool-bar-lines . 0)
+		 (left . ,(- (car pos)
+			     (* (frame-char-width)
+				(if (< (- (point) (pos-bol)) prmt-size)
+				    (- (point) (pos-bol))
+				  prmt-size))))
+		 ;; Try to put frame at the best possible place.
+		 ;; Frame should be below point if enough
+		 ;; place, otherwise above point and
+		 ;; current line should not be hidden
+		 ;; by helm frame.
+		 (top . ,(if (> (cdr pos) half-screen-size)
+			     ;; Above point
+			     (- (cdr pos)
+				;; add 2 lines to make sure there is always a gap
+				(* (+ helm-display-buffer-height 2) line-height)
+				;; account for title bar height too
+				(cddr (assq 'title-bar-size frame-info)))
+			   ;; Below point
+			   (+ (cdr pos) line-height)))
+		 (title . "Helm")
+		 (undecorated . ,helm-use-undecorated-frame-option)
+		 (background-color . ,(or helm-frame-background-color
+					  (face-attribute 'default :background)))
+		 (foreground-color . ,(or helm-frame-foreground-color
+					  (face-attribute 'default :foreground)))
+		 (alpha . ,(or helm-frame-alpha 100))
+		 (font . ,(assoc-default 'font (frame-parameters)))
+		 (vertical-scroll-bars . nil)
+		 (menu-bar-lines . 0)
+		 (fullscreen . nil)
+		 (visibility . ,(null helm-display-buffer-reuse-frame))
+		 (minibuffer . t))))
+	   display-buffer-alist)
+      ;; Display minibuffer above or below only in initial session,
+      ;; not on a session triggered by action, this way if user have
+      ;; toggled minibuffer and header-line manually she keeps this
+      ;; setting in next action.
+      (unless (or helm--executing-helm-action resume)
+	;; Add the hook inconditionally, if
+	;; helm-echo-input-in-header-line is nil helm-hide-minibuffer-maybe
+	;; will have anyway no effect so no need to remove the hook.
+	(add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+	(with-helm-buffer
+	  (setq-local helm-echo-input-in-header-line
+		      (not (> (cdr pos) half-screen-size)))))
+      (helm-display-buffer-popup-frame buffer new-frame-alist)
+      (center-frame helm-popup-frame)
+      ;; When frame size have been modified manually by user restore
+      ;; it to default value unless resuming or not using
+      ;; `helm-display-buffer-reuse-frame'.
+      ;; This have to be done AFTER raising the frame otherwise
+      ;; minibuffer visibility is lost until next session.
+      (unless (or resume (not helm-display-buffer-reuse-frame))
+	(set-frame-size helm-popup-frame
+			helm-display-buffer-width
+			helm-display-buffer-height)
+	(center-frame frame)))
+    (helm-log-run-hook "helm-display-buffer-in-own-frame" 'helm-window-configuration-hook)))
 
 (use-package helm
   :ensure t
   :init
+  (require 'esh-mode)
   (helm-mode 1)
   (setq helm-autoresize-mode t
-;;	helm-display-buffer-default-height 10
-;;        helm-display-buffer-default-width nil
+	helm-display-buffer-default-height 20
+	helm-display-buffer-default-width nil
 	helm-display-header-line nil
 	helm-actions-inherit-frame-settings nil
-;;	helm-always-two-windows t
-	helm-display-function 'helm-display-buffer-in-own-frame)
+	helm-display-buffer-width 80
+	helm-display-buffer-height 50
+	helm-display-function 'helm-display-buffer-in-own-frame-new)
   :bind (("M-x" . helm-M-x)
 	 ("C-x C-f" . helm-find-files)
 	 ("C-x b" . helm-buffers-list)
 	 ("C-x C-b" . helm-recentf)
-	 ("C-s" . helm-occur)
 	 ("C-c C-r" . helm-resume)
-	 ("C-x p g" . helm-grep-do-git-grep)))
+	 ("C-x p g" . helm-grep-do-git-grep)
+	 :map eshell-mode-map
+	 ("C-r" . helm-eshell-history)))
+
+(use-package helm-swoop
+  :ensure t
+  :bind
+  ("C-s" . helm-swoop)
+  :init
+  (setq helm-swoop-split-direction 'split-window-horizontally))
+
+(use-package helm-flymake
+  :ensure t)
+
+(use-package helm-project
+  :ensure t)
 
 (use-package avy
   :ensure t
@@ -265,7 +375,7 @@
 
 (use-package gruvbox-theme
   :config
-  (load-theme 'gruvbox-dark-hard t))
+  (load-theme 'gruvbox-dark-hard nil))
 
 (use-package mode-line-bell
   :init
@@ -323,6 +433,7 @@
 
 (use-package markdown-mode
   :mode "\\.md\\'"
+  :ensure t
   :config
   ;; fixes an issue with sideline https://github.com/emacs-lsp/lsp-ui/issues/285#issuecomment-493092398
   (custom-set-faces
@@ -330,9 +441,9 @@
 
 (use-package denote
   :config
-  (setq denote-infer-keywords t)
-  (setq denote-directory (expand-file-name "~/Documents/notes/"))
-  (setq denote-known-keywords '("sql" "meeting" "todo" "daily"))
+  (setq denote-infer-keywords t
+        denote-directory (expand-file-name "~/Documents/notes/")
+        denote-known-keywords '("sql" "meeting" "todo" "daily"))
   :hook
   (dired-mode . denote-dired-mode-in-directories))
 
@@ -361,15 +472,6 @@
 (use-package nix-mode
   :mode "\\.nix\\'")
 
-(use-package wildcharm-theme
-  :init
-  (load-theme 'wildcharm t)
-  :custom-face
-  (org-level-1 ((t (:height 1.6))))
-  (org-level-2 ((t (:height 1.4))))
-  (org-level-3 ((t (:height 1.2))))
-  (font-lock-comment-face ((t (:slant italic)))))
-
 (use-package doom-themes
   :ensure t
   :config
@@ -378,12 +480,25 @@
   (load-theme 'doom-one t)
 
   (doom-themes-visual-bell-config)
-  (setq doom-themes-treemacs-theme "doom-atom") 
+  (setq doom-themes-treemacs-theme "doom-atom")
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
 
 (use-package hide-mode-line
   :ensure t)
+
+(use-package gptel
+  :ensure t
+  :bind
+  (("C-c !" . gptel-menu)
+   ("C-c @" . gptel))
+  :init
+  (setq
+    gptel-model 'deepseek-coder-v2:16b
+    gptel-backend (gptel-make-ollama "Ollama"
+		    :host "localhost:11434"
+		    :stream nil
+		    :models '(deepseek-coder-v2:16b codegeex4:9b codellama:70b))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -392,9 +507,24 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(doom-Iosvkem))
  '(custom-safe-themes
-   '("b5fd9c7429d52190235f2383e47d340d7ff769f141cd8f9e7a4629a81abc6b19" default))
+   '("aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8"
+     "456697e914823ee45365b843c89fbc79191fdbaff471b29aad9dcbe0ee1d5641"
+     "6f1f6a1a3cff62cc860ad6e787151b9b8599f4471d40ed746ea2819fcd184e1a"
+     "4e2e42e9306813763e2e62f115da71b485458a36e8b4c24e17a2168c45c9cf9d"
+     "4ade6b630ba8cbab10703b27fd05bb43aaf8a3e5ba8c2dc1ea4a2de5f8d45882"
+     "dccf4a8f1aaf5f24d2ab63af1aa75fd9d535c83377f8e26380162e888be0c6a9"
+     "b5fd9c7429d52190235f2383e47d340d7ff769f141cd8f9e7a4629a81abc6b19"
+     default))
  '(package-selected-packages
-   '(helm-icons ace-jump-mode helm hide-mode-line moody code-cells nix-mode eglot apheleia mojo pyvenv python-ts-mode typescript-mode ellama denote yaml-mode markdown-mode haskell-mode scala-ts-mode treemacs prog-mode mode-line-bell highlight-indentation yasnippet-snippets yasnippet newcomment company-box all-the-icons company darcula-theme magit scala-mode sbt-mode)))
+   '(ace-jump-mode all-the-icons apheleia code-cells company company-box
+		   darcula-theme denote eglot ellama gptel
+		   haskell-mode helm helm-flymake helm-icons
+		   helm-project helm-swoop hide-mode-line
+		   highlight-indentation magit markdown-mode
+		   mode-line-bell mojo moody newcomment nix-mode
+		   prog-mode python-ts-mode pyvenv sbt-mode scala-mode
+		   scala-ts-mode treemacs typescript-mode yaml-mode
+		   yasnippet yasnippet-snippets)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
